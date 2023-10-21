@@ -31,7 +31,7 @@ const buildOptions = {
 	loader: {
 		'.ts': 'ts',
 	},
-	minify: process.env.NODE_ENV === 'production',
+	//minify: process.env.NODE_ENV === 'production',
 	outbase: `${__dirname}/src`,
 	outdir: `${__dirname}/../../built/_sw_dist_`,
 	treeShaking: true,
