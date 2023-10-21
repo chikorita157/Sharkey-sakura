@@ -93,7 +93,6 @@ export class SearchService {
 					'userHost',
 					'channelId',
 					'tags',
-					'attachedFileTypes',
 				],
 				typoTolerance: {
 					enabled: false,
