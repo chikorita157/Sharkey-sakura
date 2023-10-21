@@ -209,7 +209,8 @@ export class SearchService {
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser');
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.orderBy('note.createdAt', opts.order ? opts.order.toUpperCase() : 'DESC' as any);
 
 			if (opts.host) {
 				if (opts.host === '.') {
@@ -220,7 +221,7 @@ export class SearchService {
 			}
 
 			if (opts.filetype) {
-				query.andWhere(`"attachedFileTypes"::varchar LIKE '%${opts.filetype}%'`);
+				query.andWhere(`"note.attachedFileTypes"::varchar LIKE '%${opts.filetype}%'`);
 			}
 
 			this.queryService.generateVisibilityQuery(query, me);
