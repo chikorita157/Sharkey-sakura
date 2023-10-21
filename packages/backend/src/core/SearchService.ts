@@ -220,7 +220,7 @@ export class SearchService {
 			}
 
 			if (opts.filetype) {
-				query.andWhere(`attachedFileTypes::varchar LIKE '%${opts.filetype}%'`);
+				query.andWhere(`"attachedFileTypes"::varchar LIKE '%${opts.filetype}%'`);
 			}
 
 			this.queryService.generateVisibilityQuery(query, me);
