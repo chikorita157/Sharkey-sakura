@@ -2,12 +2,6 @@
 
 @import url("https://use.typekit.net/cjy0pnw.css");
 
-.image img:not([alt]), .audio-player__canvas:not([title]), .video-player video:not([title]), .media-gallery__gifv video:not([title]), .media-gallery__item-thumbnail img[alt=""], .audio-player__canvas[title=""], .video-player video[title=""], .media-gallery__gifv video[title=""] {
-/* border: 4px dashed #DD2E44; */
-border: 2px dashed #1da1f2;
-box-sizing: border-box;
-}
-
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
  *
