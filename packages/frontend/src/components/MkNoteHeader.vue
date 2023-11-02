@@ -56,6 +56,7 @@ async function menuVersions(viaKeyboard = false): Promise<void> {
 	display: flex;
 	align-items: baseline;
 	white-space: nowrap;
+	cursor: auto; /* not clickToOpen-able */
 }
 
 .name {
@@ -81,7 +82,7 @@ async function menuVersions(viaKeyboard = false): Promise<void> {
 	padding: 1px 6px;
 	font-size: 80%;
 	border: solid 0.5px var(--divider);
-	border-radius: 3px;
+	border-radius: var(--radius-xs);
 }
 
 .username {

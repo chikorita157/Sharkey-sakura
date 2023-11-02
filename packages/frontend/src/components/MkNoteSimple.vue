@@ -56,7 +56,7 @@ watch(() => props.expandAllCws, (expandAllCws) => {
 	margin: 0 10px 0 0;
 	width: 34px;
 	height: 34px;
-	border-radius: 5px;
+	border-radius: var(--radius-sm);
 	position: sticky !important;
 	top: calc(16px + var(--stickyTop, 0px));
 	left: 0;
@@ -73,7 +73,6 @@ watch(() => props.expandAllCws, (expandAllCws) => {
 }
 
 .cw {
-	cursor: default;
 	display: block;
 	margin: 0;
 	padding: 0;

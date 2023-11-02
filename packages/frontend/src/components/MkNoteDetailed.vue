@@ -295,7 +295,7 @@ const quoted = ref(false);
 const muted = ref($i ? checkWordMute(appearNote, $i, $i.mutedWords) : false);
 const translation = ref(null);
 const translating = ref(false);
-const parsed = appearNote.text ? mfm.parse(appearNote.text) : null;
+const parsed = $computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
 const urls = parsed ? extractUrlFromMfm(parsed) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
@@ -739,7 +739,7 @@ if (appearNote.reply && appearNote.reply.replyId && defaultStore.state.autoloadC
 	width: 28px;
 	height: 28px;
 	margin: 0 8px 0 0;
-	border-radius: 5px;
+	border-radius: var(--radius-sm);
 }
 
 .renoteText {
@@ -813,7 +813,7 @@ if (appearNote.reply && appearNote.reply.replyId && defaultStore.state.autoloadC
 	font-size: 80%;
 	line-height: 1;
 	border: solid 0.5px var(--divider);
-	border-radius: 4px;
+	border-radius: var(--radius-xs);
 }
 
 .noteHeaderInfo {
@@ -869,7 +869,7 @@ if (appearNote.reply && appearNote.reply.replyId && defaultStore.state.autoloadC
 .quoteNote {
 	padding: 16px;
 	border: dashed 1px var(--renote);
-	border-radius: 5px;
+	border-radius: var(--radius-sm);
 	overflow: clip;
 }
 
@@ -947,7 +947,7 @@ if (appearNote.reply && appearNote.reply.replyId && defaultStore.state.autoloadC
 .reactionTab {
 	padding: 4px 6px;
 	border: solid 1px var(--divider);
-	border-radius: 5px;
+	border-radius: var(--radius-sm);
 }
 
 .reactionTabActive {

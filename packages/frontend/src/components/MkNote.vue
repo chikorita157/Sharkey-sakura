@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview/>
-		<div :class="$style.main" @click="defaultStore.state.clickToOpen ? noteclick(appearNote.id) : undefined">
+		<div :class="[$style.main, { [$style.clickToOpen]: defaultStore.state.clickToOpen }]" @click="defaultStore.state.clickToOpen ? noteclick(appearNote.id) : undefined">
 			<MkNoteHeader :note="appearNote" :mini="true" v-on:click.stop/>
 			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
@@ -240,7 +240,7 @@ const renoteUri = appearNote.renote ? appearNote.renote.uri : null;
 
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
-const parsed = appearNote.text ? mfm.parse(appearNote.text) : null;
+const parsed = $computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
 const urls = parsed ? extractUrlFromMfm(parsed) : null;
 const isLong = shouldCollapsed(appearNote, urls ?? []);
 const collapsed = ref(appearNote.cw == null && isLong);
@@ -699,7 +699,7 @@ function readPromo() {
 			padding: 0 4px;
 			margin-bottom: 0 !important;
 			background: var(--popup);
-			border-radius: 5px;
+			border-radius: var(--radius-sm);
 			box-shadow: 0px 4px 32px var(--shadow);
 		}
 
@@ -831,7 +831,7 @@ function readPromo() {
 	left: 8px;
 	width: 5px;
 	height: calc(100% - 16px);
-	border-radius: 4px;
+	border-radius: var(--radius-ellipse);
 	pointer-events: none;
 }
 
@@ -852,7 +852,6 @@ function readPromo() {
 }
 
 .cw {
-	cursor: default;
 	display: block;
 	margin: 0;
 	padding: 0;
@@ -871,7 +870,7 @@ function readPromo() {
 	background: var(--popup);
 	padding: 6px 10px;
 	font-size: 0.8em;
-	border-radius: 4px;
+	border-radius: var(--radius-ellipse);
 	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 }
 
@@ -901,7 +900,7 @@ function readPromo() {
 	background: var(--panel);
 	padding: 6px 10px;
 	font-size: 0.8em;
-	border-radius: 4px;
+	border-radius: var(--radius-ellipse);
 	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 }
 
@@ -937,7 +936,7 @@ function readPromo() {
 .quoteNote {
 	padding: 16px;
 	border: dashed 1px var(--renote);
-	border-radius: 5px;
+	border-radius: var(--radius-sm);
 	overflow: clip;
 }
 
@@ -1095,5 +1094,9 @@ function readPromo() {
 	margin: 2px;
 	padding: 0 6px;
 	opacity: .8;
+}
+
+.clickToOpen {
+	cursor: pointer;
 }
 </style>

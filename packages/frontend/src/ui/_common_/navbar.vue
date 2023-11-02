@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
 				>
 					<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
-					<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator">
+					<span v-if="navbarItemDef[item].indicated" :class="[$style.itemIndicator, { [$style.hasItemIndicateValueIcon]: navbarItemDef[item].indicateValue }]">
 						<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
 						<i v-else class="_indicatorCircle"></i>
 					</span>
@@ -202,7 +202,7 @@ function more(ev: MouseEvent) {
 			left: 0;
 			right: 0;
 			bottom: 0;
-			border-radius: 4px;
+			border-radius: var(--radius-ellipse);
 			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 		}
 
@@ -296,7 +296,7 @@ function more(ev: MouseEvent) {
 				left: 0;
 				right: 0;
 				bottom: 0;
-				border-radius: 4px;
+				border-radius: var(--radius-ellipse);
 				background: var(--accentedBg);
 			}
 		}
@@ -316,7 +316,7 @@ function more(ev: MouseEvent) {
 		font-size: 8px;
 		animation: blink 1s infinite;
 
-		&:has(.itemIndicateValueIcon) {
+		&.hasItemIndicateValueIcon {
 			animation: none;
 			left: auto;
 			right: 40px;
@@ -388,7 +388,7 @@ function more(ev: MouseEvent) {
 			margin: auto;
 			width: 52px;
 			aspect-ratio: 1/1;
-			border-radius: 100%;
+			border-radius: var(--radius-full);
 			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 		}
 
@@ -457,7 +457,7 @@ function more(ev: MouseEvent) {
 				left: 0;
 				right: 0;
 				bottom: 0;
-				border-radius: 4px;
+				border-radius: var(--radius-ellipse);
 				background: var(--accentedBg);
 			}
 
