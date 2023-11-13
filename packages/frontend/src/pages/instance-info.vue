@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
 					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 					<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
-					<MkButton @click="refreshMetadata"><i class="ph-arrows-counter-clockwise ph-bold pg-lg"></i> Refresh metadata</MkButton>
+					<MkButton @click="refreshMetadata"><i class="ph-arrows-counter-clockwise ph-bold ph-lg"></i> Refresh metadata</MkButton>
 				</div>
 			</FormSection>
 
@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
 					<template #key>{{ i18n.ts.latestRequestReceivedAt }}</template>
-					<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
+					<template #value><MkTime v-if="instance.latestRequestReceivedAt" mode="detail" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
 				</MkKeyValue>
 			</FormSection>
 
@@ -228,15 +228,15 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'chart',
 	title: i18n.ts.charts,
-	icon: 'ph-chart-line ph-bold pg-lg',
+	icon: 'ph-chart-line ph-bold ph-lg',
 }, {
 	key: 'users',
 	title: i18n.ts.users,
-	icon: 'ph-users ph-bold pg-lg',
+	icon: 'ph-users ph-bold ph-lg',
 }, {
 	key: 'raw',
 	title: 'Raw',
-	icon: 'ph-code ph-bold pg-lg',
+	icon: 'ph-code ph-bold ph-lg',
 }]);
 
 definePageMetadata({

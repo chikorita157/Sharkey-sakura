@@ -35,6 +35,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder>
+				<template #icon><i class="ph-database ph-bold ph-lg"></i></template>
+				<template #label>{{ i18n.ts._dataRequest.title }}</template>
+
+				<div class="_gaps_m">
+					<FormInfo warn>{{ i18n.ts._dataRequest.warn }}</FormInfo>
+					<FormInfo>{{ i18n.ts._dataRequest.text }}</FormInfo>
+					<MkButton primary @click="exportData">{{ i18n.ts._dataRequest.button }}</MkButton>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
 				<template #icon><i class="ph-warning ph-bold ph-lg"></i></template>
 				<template #label>{{ i18n.ts.closeAccount }}</template>
 
@@ -58,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder>
-				<template #icon><i class="ph-code ph-bold pg-lg"></i></template>
+				<template #icon><i class="ph-code ph-bold ph-lg"></i></template>
 				<template #label>{{ i18n.ts.developer }}</template>
 
 				<div class="_gaps_m">
@@ -76,6 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<FormSection>
 		<div class="_gaps_s">
+			<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
 			<MkButton danger @click="updateRepliesAll(true)"><i class="ph-chats ph-bold ph-lg"></i> {{ i18n.ts.showRepliesToOthersInTimelineAll }}</MkButton>
 			<MkButton danger @click="updateRepliesAll(false)"><i class="ph-chat ph-bold ph-lg"></i> {{ i18n.ts.hideRepliesToOthersInTimelineAll }}</MkButton>
 		</div>
@@ -102,6 +114,7 @@ import FormSection from '@/components/form/section.vue';
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLineForAcct = computed(defaultStore.makeGetterSetter('enableCondensedLineForAcct'));
 const devMode = computed(defaultStore.makeGetterSetter('devMode'));
+const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {
@@ -153,6 +166,20 @@ async function updateRepliesAll(withReplies: boolean) {
 	if (canceled) return;
 	await os.api('following/update-all', { withReplies });
 }
+
+const exportData = () => {
+	os.api('i/export-data', {}).then(() => {
+		os.alert({
+			type: 'info',
+			text: i18n.ts.exportRequested,
+		});
+	}).catch((ev) => {
+		os.alert({
+			type: 'error',
+			text: ev.message,
+		});
+	});
+};
 
 watch([
 	enableCondensedLineForAcct,

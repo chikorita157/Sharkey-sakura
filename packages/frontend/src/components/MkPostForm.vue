@@ -33,20 +33,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 			</template>
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
-				<span v-if="!localOnly"><i class="ph-rocket-launch ph-bold pg-lg"></i></span>
-				<span v-else><i class="ph-rocket ph-bold pg-lg"></i></span>
+				<span v-if="!localOnly"><i class="ph-rocket-launch ph-bold ph-lg"></i></span>
+				<span v-else><i class="ph-rocket ph-bold ph-lg"></i></span>
 			</button>
 			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
 				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ph-heart ph-bold ph-lg"></i></span>
 				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ph-heart ph-bold ph-lg"></i></span>
-				<span v-else><i class="ph-smiley ph-bold pg-lg"></i></span>
+				<span v-else><i class="ph-smiley ph-bold ph-lg"></i></span>
 			</button>
 			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ph-check ph-bold ph-lg' : reply ? 'ph-arrow-u-up-left ph-bold pg-lg' : renote ? 'ph-quotes ph-bold ph-lg' : 'ph-paper-plane-tilt ph-bold ph-lg'"></i>
+					<i style="margin-left: 6px;" :class="posted ? 'ph-check ph-bold ph-lg' : reply ? 'ph-arrow-u-up-left ph-bold ph-lg' : renote ? 'ph-quotes ph-bold ph-lg' : 'ph-paper-plane-tilt ph-bold ph-lg'"></i>
 				</div>
 			</button>
 		</div>
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ph-image-square ph-bold ph-lg-plus"></i></button>
-			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ph-chart-bar-horizontal ph-bold pg-lg"></i></button>
+			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ph-chart-bar-horizontal ph-bold ph-lg"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ph-eye-slash ph-bold ph-lg"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ph-at ph-bold ph-lg"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ph-hash ph-bold ph-lg"></i></button>
@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -145,15 +145,22 @@ const props = withDefaults(defineProps<{
 	autofocus?: boolean;
 	freezeAfterPosted?: boolean;
 	editId?: Misskey.entities.Note["id"];
+	mock?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
+	mock: false,
 });
+
+provide('mock', props.mock);
 
 const emit = defineEmits<{
 	(ev: 'posted'): void;
 	(ev: 'cancel'): void;
 	(ev: 'esc'): void;
+
+	// Mock用
+	(ev: 'fileChangeSensitive', fileId: string, to: boolean): void;
 }>();
 
 const textareaEl = $shallowRef<HTMLTextAreaElement | null>(null);
@@ -241,7 +248,7 @@ const maxTextLength = $computed((): number => {
 });
 
 const canPost = $computed((): boolean => {
-	return !posting && !posted &&
+	return !props.mock && !posting && !posted &&
 		(1 <= textLength || 1 <= files.length || !!poll || !!props.renote) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
@@ -292,6 +299,10 @@ if (props.reply && props.reply.text != null) {
 
 		text += `${mention} `;
 	}
+}
+
+if ($i?.isSilenced && visibility === 'public') {
+	visibility = 'home';
 }
 
 if (props.channel) {
@@ -402,6 +413,8 @@ function focus() {
 }
 
 function chooseFileFrom(ev) {
+	if (props.mock) return;
+
 	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
 		for (const file of files_) {
 			files.push(file);
@@ -414,6 +427,9 @@ function detachFile(id) {
 }
 
 function updateFileSensitive(file, sensitive) {
+	if (props.mock) {
+		emit('fileChangeSensitive', file.id, sensitive);
+	}
 	files[files.findIndex(x => x.id === file.id)].isSensitive = sensitive;
 }
 
@@ -426,6 +442,8 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 }
 
 function upload(file: File, name?: string): void {
+	if (props.mock) return;
+
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
@@ -440,6 +458,7 @@ function setVisibility() {
 
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility,
+		isSilenced: $i?.isSilenced,
 		localOnly: localOnly,
 		src: visibilityButton,
 	}, {
@@ -551,6 +570,8 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
+	if (props.mock) return;
+
 	for (const { item, i } of Array.from(ev.clipboardData.items, (item, i) => ({ item, i }))) {
 		if (item.kind === 'file') {
 			const file = item.getAsFile();
@@ -635,7 +656,7 @@ function onDrop(ev): void {
 }
 
 function saveDraft() {
-	if (props.instant) return;
+	if (props.instant || props.mock) return;
 
 	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
@@ -664,6 +685,14 @@ function deleteDraft() {
 }
 
 async function post(ev?: MouseEvent) {
+	if (useCw && (cw == null || cw.trim() === '')) {
+		os.alert({
+			type: 'error',
+			text: i18n.ts.cwNotationRequired,
+		});
+		return;
+	}
+
 	if (ev) {
 		const el = ev.currentTarget ?? ev.target;
 		const rect = el.getBoundingClientRect();
@@ -671,6 +700,8 @@ async function post(ev?: MouseEvent) {
 		const y = rect.top + (el.offsetHeight / 2);
 		os.popup(MkRippleEffect, { x, y }, {}, 'end');
 	}
+
+	if (props.mock) return;
 
 	const annoying =
 		text.includes('$[x2') ||
@@ -838,6 +869,8 @@ function showActions(ev) {
 let postAccount = $ref<Misskey.entities.UserDetailed | null>(null);
 
 function openAccountMenu(ev: MouseEvent) {
+	if (props.mock) return;
+
 	openAccountMenu_({
 		withExtraOperation: false,
 		includeCurrentAccount: true,
@@ -868,7 +901,7 @@ onMounted(() => {
 
 	nextTick(() => {
 		// 書きかけの投稿を復元
-		if (!props.instant && !props.mention && !props.specified) {
+		if (!props.instant && !props.mention && !props.specified && !props.mock) {
 			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;

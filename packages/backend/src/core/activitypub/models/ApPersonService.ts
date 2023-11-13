@@ -272,7 +272,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
-		const isBot = getApType(object) === 'Service';
+		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
@@ -310,6 +310,7 @@ export class ApPersonService implements OnModuleInit {
 					backgroundId: null,
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
+					isIndexable: person.isIndexable ?? true,
 					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
@@ -473,9 +474,10 @@ export class ApPersonService implements OnModuleInit {
 			name: truncate(person.name, nameLength),
 			tags,
 			approved: true,
-			isBot: getApType(object) === 'Service',
+			isBot: getApType(object) === 'Service' || getApType(object) === 'Application',
 			isCat: (person as any).isCat === true,
 			speakAsCat: (person as any).speakAsCat != null ? (person as any).speakAsCat === true : (person as any).isCat === true,
+			isIndexable: person.isIndexable ?? true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,

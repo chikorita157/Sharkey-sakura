@@ -97,17 +97,14 @@ class NotificationManager {
 	}
 
 	@bindThis
-	public async deliver() {
+	public async notify() {
 		for (const x of this.queue) {
-			// ミュート情報を取得
-			const mentioneeMutes = await this.mutingsRepository.findBy({
-				muterId: x.target,
-			});
-
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId);
-
-			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
+			if (x.reason === 'renote') {
+				this.notificationService.createNotification(x.target, 'renote', {
+					noteId: this.note.id,
+					targetNoteId: this.note.renoteId!,
+				}, this.notifier.id);
+			} else {
 				this.notificationService.createNotification(x.target, x.reason, {
 					noteId: this.note.id,
 				}, this.notifier.id);
@@ -227,6 +224,7 @@ export class NoteEditService implements OnApplicationShutdown {
 		username: MiUser['username'];
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
+		isIndexable: MiUser['isIndexable'];
 	}, editid: MiNote['id'], data: Option, silent = false): Promise<MiNote> {
 		if (!editid) {
 			throw new Error('fail');
@@ -501,6 +499,7 @@ export class NoteEditService implements OnApplicationShutdown {
 		username: MiUser['username'];
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
+		isIndexable: MiUser['isIndexable'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
@@ -630,7 +629,7 @@ export class NoteEditService implements OnApplicationShutdown {
 				}
 			}
 
-			nm.deliver();
+			nm.notify();
 
 			//#region AP deliver
 			if (this.userEntityService.isLocalUser(user)) {
@@ -689,7 +688,7 @@ export class NoteEditService implements OnApplicationShutdown {
 		}
 
 		// Register to search database
-		this.index(note);
+		if (user.isIndexable) this.index(note);
 	}
 
 	@bindThis

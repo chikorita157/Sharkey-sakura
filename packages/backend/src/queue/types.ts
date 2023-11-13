@@ -39,6 +39,7 @@ export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
 
 export type DbJobMap = {
 	deleteDriveFiles: DbJobDataWithUser;
+	exportAccountData: DbJobDataWithUser;
 	exportCustomEmojis: DbJobDataWithUser;
 	exportAntennas: DBExportAntennasData;
 	exportNotes: DbJobDataWithUser;
@@ -48,6 +49,12 @@ export type DbJobMap = {
 	exportBlocking: DbJobDataWithUser;
 	exportUserLists: DbJobDataWithUser;
 	importAntennas: DBAntennaImportJobData;
+	importNotes: DbNoteImportJobData;
+	importTweetsToDb: DbNoteImportToDbJobData;
+	importIGToDb: DbNoteImportToDbJobData;
+	importMastoToDb: DbNoteImportToDbJobData;
+	importPleroToDb: DbNoteImportToDbJobData;
+	importKeyNotesToDb: DbKeyNoteImportToDbJobData;
 	importFollowing: DbUserImportJobData;
 	importFollowingToDb: DbUserImportToDbJobData;
 	importMuting: DbUserImportJobData;
@@ -83,6 +90,12 @@ export type DbUserImportJobData = {
 	withReplies?: boolean;
 };
 
+export type DbNoteImportJobData = {
+	user: ThinUser;
+	fileId: MiDriveFile['id'];
+	type?: string;
+};
+
 export type DBAntennaImportJobData = {
 	user: ThinUser,
 	antenna: Antenna
@@ -92,6 +105,17 @@ export type DbUserImportToDbJobData = {
 	user: ThinUser;
 	target: string;
 	withReplies?: boolean;
+};
+
+export type DbNoteImportToDbJobData = {
+	user: ThinUser;
+	target: any;
+};
+
+export type DbKeyNoteImportToDbJobData = {
+	user: ThinUser;
+	target: any;
+	note: MiNote['id'] | null;
 };
 
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;

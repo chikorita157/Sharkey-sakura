@@ -56,6 +56,7 @@ export const paramDef = {
 		description: { type: 'string', nullable: true },
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
+		defaultLike: { type: 'string', nullable: true },
 		cacheRemoteFiles: { type: 'boolean' },
 		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
@@ -240,6 +241,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.defaultDarkTheme = ps.defaultDarkTheme;
 			}
 
+			if (ps.defaultLike !== undefined) {
+				set.defaultLike = ps.defaultLike;
+			}
+
 			if (ps.cacheRemoteFiles !== undefined) {
 				set.cacheRemoteFiles = ps.cacheRemoteFiles;
 			}
@@ -290,22 +295,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.turnstileSecretKey !== undefined) {
 				set.turnstileSecretKey = ps.turnstileSecretKey;
-			}
-
-			if (ps.sensitiveMediaDetection !== undefined) {
-				set.sensitiveMediaDetection = ps.sensitiveMediaDetection;
-			}
-
-			if (ps.sensitiveMediaDetectionSensitivity !== undefined) {
-				set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
-			}
-
-			if (ps.setSensitiveFlagAutomatically !== undefined) {
-				set.setSensitiveFlagAutomatically = ps.setSensitiveFlagAutomatically;
-			}
-
-			if (ps.enableSensitiveMediaDetectionForVideos !== undefined) {
-				set.enableSensitiveMediaDetectionForVideos = ps.enableSensitiveMediaDetectionForVideos;
 			}
 
 			if (ps.enableBotTrending !== undefined) {

@@ -19,6 +19,7 @@ import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesP
 import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
+import { ExportAccountDataProcessorService } from './processors/ExportAccountDataProcessorService.js';
 import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
 import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
 import { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
@@ -28,6 +29,7 @@ import { ExportUserListsProcessorService } from './processors/ExportUserListsPro
 import { ExportAntennasProcessorService } from './processors/ExportAntennasProcessorService.js';
 import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
 import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
+import { ImportNotesProcessorService } from './processors/ImportNotesProcessorService.js';
 import { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
 import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
@@ -51,6 +53,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		CheckExpiredMutingsProcessorService,
 		CleanProcessorService,
 		DeleteDriveFilesProcessorService,
+		ExportAccountDataProcessorService,
 		ExportCustomEmojisProcessorService,
 		ExportNotesProcessorService,
 		ExportFavoritesProcessorService,
@@ -59,6 +62,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		ExportBlockingProcessorService,
 		ExportUserListsProcessorService,
 		ExportAntennasProcessorService,
+		ImportNotesProcessorService,
 		ImportFollowingProcessorService,
 		ImportMutingProcessorService,
 		ImportBlockingProcessorService,

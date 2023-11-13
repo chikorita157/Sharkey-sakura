@@ -8,7 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl" v-hotkey.global="keymap">
-			<XTutorial v-if="$i && defaultStore.reactiveState.timelineTutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
+			<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
+				{{ i18n.ts._timelineDescription[src] }}
+			</MkInfo>
 			<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
@@ -32,9 +34,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, provide } from 'vue';
+import { computed, watch, provide } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
@@ -48,8 +51,6 @@ import { antennasCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 
 provide('shouldOmitHeaderTitle', true);
-
-const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
@@ -142,6 +143,13 @@ function focus(): void {
 	tlComponent.focus();
 }
 
+function closeTutorial(): void {
+	if (!['home', 'local', 'social', 'global'].includes(src)) return;
+	const before = defaultStore.state.timelineTutorials;
+	before[src] = true;
+	defaultStore.set('timelineTutorials', before);
+}
+
 const headerActions = $computed(() => {
 	const tmp = [
 		{
@@ -160,7 +168,7 @@ const headerActions = $computed(() => {
 				} : undefined, {
 					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
-					icon: 'ph-image ph-bold pg-lg',
+					icon: 'ph-image ph-bold ph-lg',
 					ref: $$(onlyFiles),
 				}], ev.currentTarget ?? ev.target);
 			},
@@ -168,7 +176,7 @@ const headerActions = $computed(() => {
 	];
 	if (deviceKind === 'desktop') {
 		tmp.unshift({
-			icon: 'ph-arrows-counter-clockwise ph-bold pg-lg',
+			icon: 'ph-arrows-counter-clockwise ph-bold ph-lg',
 			text: i18n.ts.reload,
 			handler: (ev: Event) => {
 				console.log('called');
@@ -182,7 +190,7 @@ const headerActions = $computed(() => {
 const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
 	key: 'list:' + l.id,
 	title: l.name,
-	icon: 'ph-star ph-bold pg-lg',
+	icon: 'ph-star ph-bold ph-lg',
 	iconOnly: true,
 }))), {
 	key: 'home',
@@ -192,12 +200,12 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
-	icon: 'ph-planet ph-bold pg-lg',
+	icon: 'ph-planet ph-bold ph-lg',
 	iconOnly: true,
 }, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
-	icon: 'ph-rocket-launch ph-bold pg-lg',
+	icon: 'ph-rocket-launch ph-bold ph-lg',
 	iconOnly: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
@@ -205,12 +213,12 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 	icon: 'ph-globe-hemisphere-west ph-bold ph-lg',
 	iconOnly: true,
 }] : []), {
-	icon: 'ph-list ph-bold pg-lg',
+	icon: 'ph-list ph-bold ph-lg',
 	title: i18n.ts.lists,
 	iconOnly: true,
 	onClick: chooseList,
 }, {
-	icon: 'ph-flying-saucer ph-bold pg-lg',
+	icon: 'ph-flying-saucer ph-bold ph-lg',
 	title: i18n.ts.antennas,
 	iconOnly: true,
 	onClick: chooseAntenna,
@@ -225,7 +233,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 	...(isLocalTimelineAvailable ? [{
 		key: 'local',
 		title: i18n.ts._timelines.local,
-		icon: 'ph-planet ph-bold pg-lg',
+		icon: 'ph-planet ph-bold ph-lg',
 		iconOnly: true,
 	}] : []),
 	...(isGlobalTimelineAvailable ? [{
@@ -238,7 +246,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ph-planet ph-bold pg-lg' : src === 'social' ? 'ph-rocket-launch ph-bold pg-lg' : src === 'global' ? 'ph-globe-hemisphere-west ph-bold ph-lg' : 'ph-house ph-bold ph-lg',
+	icon: src === 'local' ? 'ph-planet ph-bold ph-lg' : src === 'social' ? 'ph-rocket-launch ph-bold ph-lg' : src === 'global' ? 'ph-globe-hemisphere-west ph-bold ph-lg' : 'ph-house ph-bold ph-lg',
 })));
 </script>
 

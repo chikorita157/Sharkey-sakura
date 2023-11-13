@@ -206,6 +206,7 @@ import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
 import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
+import * as ep___i_exportData from './endpoints/i/export-data.js';
 import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
@@ -218,10 +219,12 @@ import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
 import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
+import * as ep___i_importNotes from './endpoints/i/import-notes.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
 import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
+import * as ep___i_notificationsGrouped from './endpoints/i/notifications-grouped.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
@@ -235,7 +238,7 @@ import * as ep___i_registry_get from './endpoints/i/registry/get.js';
 import * as ep___i_registry_keysWithType from './endpoints/i/registry/keys-with-type.js';
 import * as ep___i_registry_keys from './endpoints/i/registry/keys.js';
 import * as ep___i_registry_remove from './endpoints/i/registry/remove.js';
-import * as ep___i_registry_scopes from './endpoints/i/registry/scopes.js';
+import * as ep___i_registry_scopesWithDomain from './endpoints/i/registry/scopes-with-domain.js';
 import * as ep___i_registry_set from './endpoints/i/registry/set.js';
 import * as ep___i_revokeToken from './endpoints/i/revoke-token.js';
 import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
@@ -572,6 +575,7 @@ const $i_authorizedApps: Provider = { provide: 'ep:i/authorized-apps', useClass:
 const $i_claimAchievement: Provider = { provide: 'ep:i/claim-achievement', useClass: ep___i_claimAchievement.default };
 const $i_changePassword: Provider = { provide: 'ep:i/change-password', useClass: ep___i_changePassword.default };
 const $i_deleteAccount: Provider = { provide: 'ep:i/delete-account', useClass: ep___i_deleteAccount.default };
+const $i_exportData: Provider = { provide: 'ep:i/export-data', useClass: ep___i_exportData.default };
 const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass: ep___i_exportBlocking.default };
 const $i_exportFollowing: Provider = { provide: 'ep:i/export-following', useClass: ep___i_exportFollowing.default };
 const $i_exportMute: Provider = { provide: 'ep:i/export-mute', useClass: ep___i_exportMute.default };
@@ -584,10 +588,12 @@ const $i_gallery_likes: Provider = { provide: 'ep:i/gallery/likes', useClass: ep
 const $i_gallery_posts: Provider = { provide: 'ep:i/gallery/posts', useClass: ep___i_gallery_posts.default };
 const $i_importBlocking: Provider = { provide: 'ep:i/import-blocking', useClass: ep___i_importBlocking.default };
 const $i_importFollowing: Provider = { provide: 'ep:i/import-following', useClass: ep___i_importFollowing.default };
+const $i_importNotes: Provider = { provide: 'ep:i/import-notes', useClass: ep___i_importNotes.default };
 const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep___i_importMuting.default };
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
 const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
+const $i_notificationsGrouped: Provider = { provide: 'ep:i/notifications-grouped', useClass: ep___i_notificationsGrouped.default };
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
 const $i_pin: Provider = { provide: 'ep:i/pin', useClass: ep___i_pin.default };
@@ -601,7 +607,7 @@ const $i_registry_get: Provider = { provide: 'ep:i/registry/get', useClass: ep__
 const $i_registry_keysWithType: Provider = { provide: 'ep:i/registry/keys-with-type', useClass: ep___i_registry_keysWithType.default };
 const $i_registry_keys: Provider = { provide: 'ep:i/registry/keys', useClass: ep___i_registry_keys.default };
 const $i_registry_remove: Provider = { provide: 'ep:i/registry/remove', useClass: ep___i_registry_remove.default };
-const $i_registry_scopes: Provider = { provide: 'ep:i/registry/scopes', useClass: ep___i_registry_scopes.default };
+const $i_registry_scopesWithDomain: Provider = { provide: 'ep:i/registry/scopes-with-domain', useClass: ep___i_registry_scopesWithDomain.default };
 const $i_registry_set: Provider = { provide: 'ep:i/registry/set', useClass: ep___i_registry_set.default };
 const $i_revokeToken: Provider = { provide: 'ep:i/revoke-token', useClass: ep___i_revokeToken.default };
 const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: ep___i_signinHistory.default };
@@ -942,6 +948,7 @@ const $sponsors: Provider = { provide: 'ep:sponsors', useClass: ep___sponsors.de
 		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
+		$i_exportData,
 		$i_exportBlocking,
 		$i_exportFollowing,
 		$i_exportMute,
@@ -954,10 +961,12 @@ const $sponsors: Provider = { provide: 'ep:sponsors', useClass: ep___sponsors.de
 		$i_gallery_posts,
 		$i_importBlocking,
 		$i_importFollowing,
+		$i_importNotes,
 		$i_importMuting,
 		$i_importUserLists,
 		$i_importAntennas,
 		$i_notifications,
+		$i_notificationsGrouped,
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
@@ -971,7 +980,7 @@ const $sponsors: Provider = { provide: 'ep:sponsors', useClass: ep___sponsors.de
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
-		$i_registry_scopes,
+		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
 		$i_signinHistory,
@@ -1306,6 +1315,7 @@ const $sponsors: Provider = { provide: 'ep:sponsors', useClass: ep___sponsors.de
 		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
+		$i_exportData,
 		$i_exportBlocking,
 		$i_exportFollowing,
 		$i_exportMute,
@@ -1318,10 +1328,12 @@ const $sponsors: Provider = { provide: 'ep:sponsors', useClass: ep___sponsors.de
 		$i_gallery_posts,
 		$i_importBlocking,
 		$i_importFollowing,
+		$i_importNotes,
 		$i_importMuting,
 		$i_importUserLists,
 		$i_importAntennas,
 		$i_notifications,
+		$i_notificationsGrouped,
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
@@ -1335,7 +1347,7 @@ const $sponsors: Provider = { provide: 'ep:sponsors', useClass: ep___sponsors.de
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
-		$i_registry_scopes,
+		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
 		$i_signinHistory,

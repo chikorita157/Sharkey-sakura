@@ -206,6 +206,7 @@ import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
 import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
+import * as ep___i_exportData from './endpoints/i/export-data.js';
 import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
@@ -218,10 +219,12 @@ import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
 import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
+import * as ep___i_importNotes from './endpoints/i/import-notes.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
 import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
+import * as ep___i_notificationsGrouped from './endpoints/i/notifications-grouped.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
@@ -235,7 +238,7 @@ import * as ep___i_registry_get from './endpoints/i/registry/get.js';
 import * as ep___i_registry_keysWithType from './endpoints/i/registry/keys-with-type.js';
 import * as ep___i_registry_keys from './endpoints/i/registry/keys.js';
 import * as ep___i_registry_remove from './endpoints/i/registry/remove.js';
-import * as ep___i_registry_scopes from './endpoints/i/registry/scopes.js';
+import * as ep___i_registry_scopesWithDomain from './endpoints/i/registry/scopes-with-domain.js';
 import * as ep___i_registry_set from './endpoints/i/registry/set.js';
 import * as ep___i_revokeToken from './endpoints/i/revoke-token.js';
 import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
@@ -570,6 +573,7 @@ const eps = [
 	['i/claim-achievement', ep___i_claimAchievement],
 	['i/change-password', ep___i_changePassword],
 	['i/delete-account', ep___i_deleteAccount],
+	['i/export-data', ep___i_exportData],
 	['i/export-blocking', ep___i_exportBlocking],
 	['i/export-following', ep___i_exportFollowing],
 	['i/export-mute', ep___i_exportMute],
@@ -582,10 +586,12 @@ const eps = [
 	['i/gallery/posts', ep___i_gallery_posts],
 	['i/import-blocking', ep___i_importBlocking],
 	['i/import-following', ep___i_importFollowing],
+	['i/import-notes', ep___i_importNotes],
 	['i/import-muting', ep___i_importMuting],
 	['i/import-user-lists', ep___i_importUserLists],
 	['i/import-antennas', ep___i_importAntennas],
 	['i/notifications', ep___i_notifications],
+	['i/notifications-grouped', ep___i_notificationsGrouped],
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],
 	['i/pin', ep___i_pin],
@@ -599,7 +605,7 @@ const eps = [
 	['i/registry/keys-with-type', ep___i_registry_keysWithType],
 	['i/registry/keys', ep___i_registry_keys],
 	['i/registry/remove', ep___i_registry_remove],
-	['i/registry/scopes', ep___i_registry_scopes],
+	['i/registry/scopes-with-domain', ep___i_registry_scopesWithDomain],
 	['i/registry/set', ep___i_registry_set],
 	['i/revoke-token', ep___i_revokeToken],
 	['i/signin-history', ep___i_signinHistory],

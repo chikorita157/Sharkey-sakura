@@ -748,6 +748,8 @@ export interface Locale {
     "developer": string;
     "makeExplorable": string;
     "makeExplorableDescription": string;
+    "makeIndexable": string;
+    "makeIndexableDescription": string;
     "showGapBetweenNotesInTimeline": string;
     "duplicate": string;
     "left": string;
@@ -1187,6 +1189,10 @@ export interface Locale {
     "refreshing": string;
     "pullDownToRefresh": string;
     "disableStreamingTimeline": string;
+    "useGroupedNotifications": string;
+    "signupPendingError": string;
+    "cwNotationRequired": string;
+    "doReaction": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1196,6 +1202,10 @@ export interface Locale {
         "tooManyActiveAnnouncementDescription": string;
         "readConfirmTitle": string;
         "readConfirmText": string;
+        "shouldNotBeUsedToPresentPermanentInfo": string;
+        "dialogAnnouncementUxWarn": string;
+        "silence": string;
+        "silenceDescription": string;
     };
     "_initialAccountSetting": {
         "accountCreated": string;
@@ -1209,9 +1219,90 @@ export interface Locale {
         "pushNotificationDescription": string;
         "initialAccountSettingCompleted": string;
         "haveFun": string;
-        "ifYouNeedLearnMore": string;
+        "youCanContinueTutorial": string;
+        "startTutorial": string;
         "skipAreYouSure": string;
         "laterAreYouSure": string;
+    };
+    "_initialTutorial": {
+        "launchTutorial": string;
+        "title": string;
+        "wellDone": string;
+        "skipAreYouSure": string;
+        "_landing": {
+            "title": string;
+            "description": string;
+        };
+        "_note": {
+            "title": string;
+            "description": string;
+            "reply": string;
+            "renote": string;
+            "reaction": string;
+            "menu": string;
+        };
+        "_reaction": {
+            "title": string;
+            "description": string;
+            "letsTryReacting": string;
+            "reactToContinue": string;
+            "reactNotification": string;
+            "reactDone": string;
+        };
+        "_timeline": {
+            "title": string;
+            "description1": string;
+            "home": string;
+            "local": string;
+            "social": string;
+            "global": string;
+            "description2": string;
+            "description3": string;
+        };
+        "_postNote": {
+            "title": string;
+            "description1": string;
+            "_visibility": {
+                "description": string;
+                "public": string;
+                "home": string;
+                "followers": string;
+                "direct": string;
+                "doNotSendConfidencialOnDirect1": string;
+                "doNotSendConfidencialOnDirect2": string;
+                "localOnly": string;
+            };
+            "_cw": {
+                "title": string;
+                "description": string;
+                "_exampleNote": {
+                    "cw": string;
+                    "note": string;
+                };
+                "useCases": string;
+            };
+        };
+        "_howToMakeAttachmentsSensitive": {
+            "title": string;
+            "description": string;
+            "tryThisFile": string;
+            "_exampleNote": {
+                "note": string;
+            };
+            "method": string;
+            "sensitiveSucceeded": string;
+            "doItToContinue": string;
+        };
+        "_done": {
+            "title": string;
+            "description": string;
+        };
+    };
+    "_timelineDescription": {
+        "home": string;
+        "local": string;
+        "social": string;
+        "global": string;
     };
     "_serverRules": {
         "description": string;
@@ -1560,6 +1651,10 @@ export interface Locale {
                 "title": string;
                 "description": string;
             };
+            "_tutorialCompleted": {
+                "title": string;
+                "description": string;
+            };
         };
     };
     "_role": {
@@ -1601,6 +1696,7 @@ export interface Locale {
             "gtlAvailable": string;
             "ltlAvailable": string;
             "canPublicNote": string;
+            "canImportNotes": string;
             "canInvite": string;
             "inviteLimit": string;
             "inviteLimitCycle": string;
@@ -1774,6 +1870,7 @@ export interface Locale {
         "notesCount": string;
         "nameAndDescription": string;
         "nameOnly": string;
+        "allowRenoteToExternal": string;
     };
     "_menuDisplay": {
         "sideFull": string;
@@ -1889,17 +1986,6 @@ export interface Locale {
         "minute": string;
         "hour": string;
         "day": string;
-    };
-    "_timelineTutorial": {
-        "title": string;
-        "step1_1": string;
-        "step1_2": string;
-        "step2_1": string;
-        "step2_2": string;
-        "step3_1": string;
-        "step3_2": string;
-        "step4_1": string;
-        "step4_2": string;
     };
     "_2fa": {
         "alreadyRegistered": string;
@@ -2233,6 +2319,9 @@ export interface Locale {
         "checkNotificationBehavior": string;
         "sendTestNotification": string;
         "notificationWillBeDisplayedLikeThis": string;
+        "reactedBySomeUsers": string;
+        "renotedBySomeUsers": string;
+        "followedBySomeUsers": string;
         "_types": {
             "all": string;
             "note": string;
@@ -2414,6 +2503,20 @@ export interface Locale {
                 "description": string;
             };
         };
+    };
+    "_animatedMFM": {
+        "play": string;
+        "stop": string;
+        "_alert": {
+            "text": string;
+            "confirm": string;
+        };
+    };
+    "_dataRequest": {
+        "title": string;
+        "warn": string;
+        "text": string;
+        "button": string;
     };
 }
 declare const locales: {

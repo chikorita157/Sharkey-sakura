@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkSelect>
 
 	<MkSelect v-model="role.target" :readonly="readonly">
-		<template #label><i class="ph-users ph-bold pg-lg"></i> {{ i18n.ts._role.assignTarget }}</template>
+		<template #label><i class="ph-users ph-bold ph-lg"></i> {{ i18n.ts._role.assignTarget }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
 		<option value="manual">{{ i18n.ts._role.manual }}</option>
 		<option value="conditional">{{ i18n.ts._role.conditional }}</option>
@@ -155,6 +155,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
 					<MkRange v-model="role.policies.canPublicNote.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canImportNotes, 'canImportNotes'])">
+				<template #label>{{ i18n.ts._role._options.canImportNotes }}</template>
+				<template #suffix>
+					<span v-if="role.policies.canImportNotes.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canImportNotes.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canImportNotes)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.canImportNotes.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="role.policies.canImportNotes.value" :disabled="role.policies.canImportNotes.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="role.policies.canImportNotes.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
@@ -588,7 +608,7 @@ let q = $ref('');
 function getPriorityIcon(option) {
 	if (option.priority === 2) return 'ph-arrow-up ph-bold ph-lg';
 	if (option.priority === 1) return 'ph-arrow-up ph-bold ph-lg';
-	return 'ph-circle ph-bold pg-lg';
+	return 'ph-circle ph-bold ph-lg';
 }
 
 function matchQuery(keywords: string[]): boolean {

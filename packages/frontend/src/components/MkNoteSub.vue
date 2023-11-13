@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div :class="$style.content">
 				<p v-if="note.cw != null" :class="$style.cw">
-					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'account'" :i="$i"/>
+					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'account'"/>
 					<MkCwButton v-model="showContent" :note="note"/>
 				</p>
 				<div v-show="note.cw == null || showContent">
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<footer :class="$style.footer">
 				<MkReactionsViewer ref="reactionsViewer" :note="note"/>
 				<button class="_button" :class="$style.noteFooterButton" @click="reply()">
-					<i class="ph-arrow-u-up-left ph-bold pg-lg"></i>
+					<i class="ph-arrow-u-up-left ph-bold ph-lg"></i>
 					<p v-if="note.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ note.repliesCount }}</p>
 				</button>
 				<button
@@ -110,6 +110,7 @@ const canRenote = computed(() => ['public', 'home'].includes(props.note.visibili
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
+	meta: Misskey.entities.LiteInstanceMetadata;
 	detail?: boolean;
 	expandAllCws?: boolean;
 
@@ -188,7 +189,7 @@ function react(viaKeyboard = false): void {
 	if (props.note.reactionAcceptance === 'likeOnly') {
 		os.api('notes/reactions/create', {
 			noteId: props.note.id,
-			reaction: '❤️',
+			reaction: props.meta.defaultLike,
 		});
 		const el = reactButton.value as HTMLElement | null | undefined;
 		if (el) {
@@ -218,7 +219,7 @@ function like(): void {
 	showMovedDialog();
 	os.api('notes/reactions/create', {
 		noteId: props.note.id,
-		reaction: '❤️',
+		reaction: props.meta.defaultLike,
 	});
 	const el = reactButton.value as HTMLElement | null | undefined;
 	if (el) {
