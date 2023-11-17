@@ -64,14 +64,14 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: 'Blog',
 		icon: 'ph-newspaper-clipping ph-bold ph-lg',
 		action: () => {
-			window.open('https://blog.sakurajima.moe, '_blank');
+			window.open('https://blog.sakurajima.moe', '_blank');
 		},
 	},{
 		type: 'link',
 		text: 'Forums',
 		icon: 'ph-newspaper-clipping ph-bold ph-lg',
 		action: () => {
-			window.open('https://forums.sakurajima.moe, '_blank');
+			window.open('https://forums.sakurajima.moe', '_blank');
 		},
 	},{
 		type: 'link',
