@@ -59,17 +59,26 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.federation,
 		icon: 'ph-globe-hemisphere-west ph-bold ph-lg',
 		to: '/about#federation',
-	}, {
+	},{
+		type: 'link',
+		text: 'Blog',
+		icon: 'ph-newspaper-clipping ph-bold ph-lg',
+		action: () => {
+			window.open('https://blog.sakurajima.moe, '_blank');
+		},
+	},{
+		type: 'link',
+		text: 'Forums',
+		icon: 'ph-newspaper-clipping ph-bold ph-lg',
+		action: () => {
+			window.open('https://forums.sakurajima.moe, '_blank');
+		},
+	},{
 		type: 'link',
 		text: i18n.ts.charts,
 		icon: 'ph-chart-line ph-bold ph-lg',
 		to: '/about#charts',
-	}, null, {
-		type: 'link',
-		text: i18n.ts.ads,
-		icon: 'ph-flag ph-bold ph-lg',
-		to: '/ads',
-	}, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
+	}, null, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
 		type: 'link',
 		to: '/invite',
 		text: i18n.ts.invite,
