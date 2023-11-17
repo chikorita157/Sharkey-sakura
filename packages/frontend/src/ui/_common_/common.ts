@@ -60,14 +60,12 @@ export function openInstanceMenu(ev: MouseEvent) {
 		icon: 'ph-globe-hemisphere-west ph-bold ph-lg',
 		to: '/about#federation',
 	},{
-		type: 'link',
 		text: 'Blog',
 		icon: 'ph-newspaper-clipping ph-bold ph-lg',
 		action: () => {
 			window.open('https://blog.sakurajima.moe', '_blank');
 		},
 	},{
-		type: 'link',
 		text: 'Forums',
 		icon: 'ph-newspaper-clipping ph-bold ph-lg',
 		action: () => {
