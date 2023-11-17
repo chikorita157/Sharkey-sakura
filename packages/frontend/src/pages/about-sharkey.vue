@@ -36,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</FormLink>
 						<FormLink to="https://github.com/chikorita157/Sharkey-sakura/" external>
 							<template #icon><i class="ph-code ph-bold ph-lg"></i></template>
-							{{ i18n.ts._aboutMisskey.source }}
-							<template #suffix>GitHub (Sakurajima version)</template>
+							 Repo (Sakurajima version)
+							<template #suffix>GitHub</template>
 						</FormLink>
 						<FormLink to="https://ko-fi.com/transfem" external>
 							<template #icon><i class="ph-piggy-bank ph-bold ph-lg"></i></template>
