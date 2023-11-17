@@ -223,7 +223,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		username: MiUser['username'];
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
-		isIndexable: MiUser['isIndexable'];
+		noindex: MiUser['noindex'];
 	}, data: Option, silent = false): Promise<MiNote> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
@@ -384,7 +384,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		username: MiUser['username'];
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
-		isIndexable: MiUser['isIndexable'];
+		noindex: MiUser['noindex'];
 	}, data: Option, silent = false): Promise<MiNote> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
@@ -642,7 +642,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		username: MiUser['username'];
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
-		isIndexable: MiUser['isIndexable'];
+		noindex: MiUser['noindex'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		const meta = await this.metaService.fetch();
 
@@ -873,7 +873,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Register to search database
-		if (user.isIndexable) this.index(note);
+		if (!user.noindex) this.index(note);
 	}
 
 	@bindThis
@@ -882,7 +882,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		username: MiUser['username'];
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
-		isIndexable: MiUser['isIndexable'];
+		noindex: MiUser['noindex'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		const meta = await this.metaService.fetch();
 
@@ -953,10 +953,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Pack the note
 		const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
 
-		this.globalEventService.publishNotesStream(noteObj);
-
-		this.roleService.addNoteToRoleTimeline(noteObj);
-
 		if (data.channel) {
 			this.channelsRepository.increment({ id: data.channel.id }, 'notesCount', 1);
 			this.channelsRepository.update(data.channel.id, {
@@ -976,7 +972,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Register to search database
-		if (user.isIndexable) this.index(note);
+		if (!user.noindex) this.index(note);
 	}
 
 	@bindThis
