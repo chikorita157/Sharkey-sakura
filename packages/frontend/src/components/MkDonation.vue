@@ -15,13 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</svg>
 	</div>
 	<div :class="$style.main">
-		<div :class="$style.title">{{ i18n.ts.didYouLikeMisskey }}</div>
+		<div :class="$style.title">Are you enjoying Sakurajima?</div>
 		<div :class="$style.text">
-			<I18n :src="i18n.ts.pleaseDonate" tag="span">
-				<template #host>
-					{{ instance.name ?? host }}
-				</template>
-			</I18n>
+			The services at Sakurajima are entirely ad-free and supported by donors like you. While optional, donations allow us to offset the costs of running this service.
 			<div style="margin-top: 0.2em;">
 				<MkLink target="_blank" url="https://www.patreon.com/sakurajimamastodon">{{ i18n.ts.learnMore }}</MkLink>
 			</div>
