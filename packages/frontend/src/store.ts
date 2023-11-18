@@ -126,14 +126,14 @@ export const defaultStore = markRaw(new Storage('base', {
 	menu: {
 		where: 'deviceAccount',
 		default: [
-			'notifications',
 			'explore',
+			'notifications',
 			'followRequests',
-			'-',
-			'announcements',
-			'search',
-			'-',
 			'favorites',
+			'lists',
+			'search',
+			'lookup',
+			'profile',
 			'drive',
 			'achievements',
 		],
@@ -244,7 +244,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	showFixedPostForm: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	showFixedPostFormInChannel: {
 		where: 'device',
@@ -308,7 +308,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	squareAvatars: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	showAvatarDecorations: {
 		where: 'device',
