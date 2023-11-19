@@ -240,7 +240,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	showFixedPostForm: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	showFixedPostFormInChannel: {
 		where: 'device',
