@@ -27,6 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s" :class="$style.mainActions">
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
+				<MkButton :class="$style.mainAction" full rounded @click="exploreTimeline()”>{{ i18n.ts.letsLookAtTimeline }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
 			</div>
 		</div>
@@ -136,6 +137,9 @@ function showMenu(ev) {
 
 function exploreOtherServers() {
 	window.open('https://joinsharkey.org/#findaninstance', '_blank');
+}
+function exploreTimeline() {
+	window.open(‘./timeline’);
 }
 </script>
 
