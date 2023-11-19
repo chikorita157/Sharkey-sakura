@@ -139,7 +139,7 @@ function exploreOtherServers() {
 	window.open('https://joinsharkey.org/#findaninstance', '_blank');
 }
 function exploreTimeline() {
-	window.open(‘./timeline’);
+	window.open('./timeline');
 }
 </script>
 
