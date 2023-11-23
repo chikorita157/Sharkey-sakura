@@ -35,6 +35,7 @@ export const getBuiltinThemes = () => Promise.all(
 		'l-u0',
 		'l-rosepinedawn',
 		'l-sakura',
+		'l-sakurajima-sakura',
 
 		'd-dark',
 		'd-persimmon',
