@@ -315,7 +315,7 @@ const muted = ref($i ? checkWordMute(appearNote, $i, $i.mutedWords) : false);
 const translation = ref(null);
 const translating = ref(false);
 const parsed = $computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
-const urls = parsed ? extractUrlFromMfm(parsed) : null;
+const urls = parsed ? extractUrlFromMfm(parsed).filter(u => u !== renoteUrl && u !== renoteUri) : null;
 const animated = $computed(() => parsed ? checkAnimationFromMfm(parsed) : null);
 const allowAnim = ref(defaultStore.state.advancedMfm && defaultStore.state.animatedMfm ? true : false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
@@ -323,7 +323,7 @@ const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const quotes = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
-const defaultLike = computed(() => defaultStore.state.like !== '❤️' ? defaultStore.state.like : null);
+const defaultLike = computed(() => defaultStore.state.like ? defaultStore.state.like : null);
 
 watch(() => props.expandAllCws, (expandAllCws) => {
 	if (expandAllCws !== showContent.value) showContent.value = expandAllCws;

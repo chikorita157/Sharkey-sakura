@@ -226,7 +226,10 @@ const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', nul
 let note = $ref(deepClone(props.note));
 
 function noteclick(id: string) {
-	router.push(`/notes/${id}`);
+	const selection = document.getSelection();
+	if (selection?.toString().length === 0) {
+		router.push(`/notes/${id}`);
+	}
 }
 
 // plugin
@@ -271,7 +274,7 @@ const renoteUri = appearNote.renote ? appearNote.renote.uri : null;
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const parsed = $computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
-const urls = $computed(() => parsed ? extractUrlFromMfm(parsed) : null);
+const urls = $computed(() => parsed ? extractUrlFromMfm(parsed).filter(u => u !== renoteUrl && u !== renoteUri) : null);
 const animated = $computed(() => parsed ? checkAnimationFromMfm(parsed) : null);
 const allowAnim = ref(defaultStore.state.advancedMfm && defaultStore.state.animatedMfm ? true : false);
 const isLong = shouldCollapsed(appearNote, urls ?? []);
@@ -285,7 +288,7 @@ const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i.id));
 let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
-const defaultLike = computed(() => defaultStore.state.like !== '❤️' ? defaultStore.state.like : null);
+const defaultLike = computed(() => defaultStore.state.like ? defaultStore.state.like : null);
 
 const keymap = {
 	'r': () => reply(true),
