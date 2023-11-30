@@ -11,6 +11,7 @@
 * Removed the Advertisement menu item (Sakurajima Social has no ads and never will)
 * Different defaults to make Sharkey more approachable for users who used Twitter/X.
 * Added link to the repo of the Sakura version of Sharkey.
+* Only show public posts from non-silenced hosts for tag search.
 
 ---
 <div align="center">
