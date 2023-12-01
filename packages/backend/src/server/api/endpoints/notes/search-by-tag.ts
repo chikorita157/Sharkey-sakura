@@ -140,6 +140,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			// Do not show suspended or silenced users
+			query.andWhere('user.isSuspended = FALSE');
+			query.andWhere('user.isSilenced = FALSE');
+
 			// Search notes
 			const notes = await query.limit(ps.limit).getMany();
 
