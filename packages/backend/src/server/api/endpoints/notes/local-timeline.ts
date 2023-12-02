@@ -141,6 +141,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 					if (!ps.withReplies && note.replyId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id)) return false;
 					if (!ps.withBots && note.user?.isBot) return false;
+					if (note.user?.isSuspended) return false;
 					if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 					if (note.renoteId) {
@@ -202,7 +203,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (me) this.queryService.generateMutedUserQuery(query, me);
 		if (me) this.queryService.generateBlockedUserQuery(query, me);
 		if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-
+			
+		query.andWhere('user.isSuspended = FALSE');
+		
 		if (ps.withFiles) {
 			query.andWhere('note.fileIds != \'{}\'');
 		}
