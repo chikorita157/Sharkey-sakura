@@ -52,12 +52,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+				<MkSwitch v-model="showTickerOnReplies">Show instance ticker on replies</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
 					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
 					<option value="small">{{ i18n.ts.small }}</option>
 					<option value="medium">{{ i18n.ts.medium }}</option>
 					<option value="large">{{ i18n.ts.large }}</option>
 				</MkRadios>
+				<MkRadios v-model="noteDesign">
+					<template #label>Note Design</template>
+					<option value="sharkey">Sharkey</option>
+					<option value="misskey">Misskey</option>
+			</MkRadios>
 			</div>
 
 			<MkSelect v-model="instanceTicker">
@@ -271,6 +277,8 @@ const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificati
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
+const showTickerOnReplies = computed(defaultStore.makeGetterSetter('showTickerOnReplies'));
+const noteDesign = computed(defaultStore.makeGetterSetter('noteDesign'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
