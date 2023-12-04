@@ -36,6 +36,8 @@ export const getBuiltinThemes = () => Promise.all(
 		'l-rosepinedawn',
 		'l-sakura',
 		'l-sakurajima-sakura',
+		'l-gekka',
+		'l-holiday',
 
 		'd-dark',
 		'd-persimmon',
