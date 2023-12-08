@@ -75,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const instance = await this.metaService.fetch();
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere('note.visibility = \'public\'')
 				.andWhere('note.userHost NOT IN (:...blockedhosts)', { blockedhosts: instance.blockedHosts })
