@@ -77,12 +77,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere('note.visibility = \'public\'')
+				.andWhere('note.userHost NOT IN (:...blockedhosts)', { blockedhosts: instance.blockedHosts })
+				.andWhere('note.userHost NOT IN (:...silencedhosts)', { silencedhosts: instance.silencedHosts })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
-
+			
 			const meta = await this.metaService.fetch(true);
 
 			if (!meta.enableBotTrending) query.andWhere('user.isBot = FALSE');
