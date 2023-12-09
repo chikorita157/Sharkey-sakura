@@ -63,8 +63,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkRadios>
 				<MkRadios v-model="noteDesign">
 					<template #label>Note Design</template>
-					<option value="sharkey">Sharkey</option>
-					<option value="misskey">Misskey</option>
+					<option value="sharkey"><i class="sk-icons sk-shark ph-bold" style="top: 2px;position: relative;"></i> Sharkey</option>
+					<option value="misskey"><i class="sk-icons sk-misskey ph-bold" style="top: 2px;position: relative;"></i> Misskey</option>
 				</MkRadios>
 			</div>
 
@@ -89,6 +89,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
 				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
 			</MkRadios>
+
+			<MkRange v-model="numberOfReplies" :min="2" :max="20" :step="1" easing>
+				<template #label>{{ i18n.ts.numberOfReplies }}</template>
+				<template #caption>{{ i18n.ts.numberOfRepliesDescription }}</template>
+			</MkRange>
 		</div>
 	</FormSection>
 
@@ -153,8 +158,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkRadios v-model="cornerRadius">
 				<template #label>{{ i18n.ts.cornerRadius }}</template>
-				<option :value="null">Sharkey</option>
-				<option value="misskey">Misskey</option>
+				<option :value="null"><i class="sk-icons sk-shark ph-bold" style="top: 2px;position: relative;"></i> Sharkey</option>
+				<option value="misskey"><i class="sk-icons sk-misskey ph-bold" style="top: 2px;position: relative;"></i> Misskey</option>
 			</MkRadios>
 		</div>
 	</FormSection>
@@ -268,6 +273,7 @@ const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
+const numberOfReplies = computed(defaultStore.makeGetterSetter('numberOfReplies'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));

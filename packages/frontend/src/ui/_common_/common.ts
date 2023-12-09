@@ -119,6 +119,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 	} : undefined, {
 		type: 'link',
 		text: i18n.ts.aboutMisskey,
+		icon: 'sk-icons sk-shark ph-bold',
 		to: '/about-sharkey',
 	}], ev.currentTarget ?? ev.target, {
 		align: 'left',
