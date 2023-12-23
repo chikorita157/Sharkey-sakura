@@ -52,7 +52,7 @@ export const getBuiltinThemes = () => Promise.all(
 		'd-rosepine',
 		'd-rosepinemoon',
 		'd-yozakura'
-	].map(name => import(`../themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
+	].map(name => import(`@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
 export const getBuiltinThemesRef = () => {
