@@ -4,7 +4,7 @@
  */
 
 import { setImmediate } from 'node:timers/promises';
-import * as mfm from 'mfm-js';
+import * as mfm from '@sharkey/sfm-js';
 import { In, DataSource, IsNull, LessThan } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
@@ -366,6 +366,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
 				data.visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 			}
+		}
+
+		if (user.host && !data.cw) {
+			await this.federatedInstanceService.fetch(user.host).then(async i => {
+				if (i.isNSFW) {
+					data.cw = 'Instance is marked as NSFW';
+				}
+			});
 		}
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
