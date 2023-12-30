@@ -289,7 +289,7 @@ const isDeleted = ref(false);
 const renoted = ref(false);
 const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords));
-const translation = ref<any>(null);
+const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i.id));
@@ -829,7 +829,8 @@ function emitUpdReaction(emoji: string, delta: number) {
 		z-index: 1;
 		margin-top: 0.4em;
 		width: max-content;
-		min-width: max-content;
+		min-width: min-content;
+		max-width: fit-content;
 	}
 
 	&:hover > .article > .main > .footer > .footerButton {

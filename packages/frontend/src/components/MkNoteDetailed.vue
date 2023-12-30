@@ -170,7 +170,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="!repliesLoaded" style="padding: 16px">
 				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
 			</div>
-			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true" :expandAllCws="props.expandAllCws"/>
+			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true" :expandAllCws="props.expandAllCws" :onDeleteCallback="removeReply" />
 		</div>
 		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 			<MkPagination :pagination="renotesPagination" :disableAutoLoad="true">
@@ -309,7 +309,7 @@ const showContent = ref(defaultStore.state.uncollapseCW);
 const isDeleted = ref(false);
 const renoted = ref(false);
 const muted = ref($i ? checkWordMute(appearNote.value, $i, $i.mutedWords) : false);
-const translation = ref(null);
+const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter(u => u !== renoteUrl && u !== renoteUri) : null;
@@ -353,7 +353,7 @@ provide('react', (reaction: string) => {
 });
 
 const tab = ref('replies');
-const reactionTabType = ref(null);
+const reactionTabType = ref<string | null>(null);
 
 const renotesPagination = computed(() => ({
 	endpoint: 'notes/renotes',
@@ -372,11 +372,25 @@ const reactionsPagination = computed(() => ({
 	},
 }));
 
+async function addReplyTo(replyNote: Misskey.entities.Note) {
+		replies.value.unshift(replyNote);
+		appearNote.value.repliesCount += 1;
+}
+
+async function removeReply(id: Misskey.entities.Note['id']) {
+		const replyIdx = replies.value.findIndex(note => note.id === id);
+		if (replyIdx >= 0) {
+			replies.value.splice(replyIdx, 1);
+			appearNote.value.repliesCount -= 1;
+		}
+}
+
 useNoteCapture({
 	rootEl: el,
 	note: appearNote,
 	pureNote: note,
 	isDeletedRef: isDeleted,
+	onReplyCallback: addReplyTo,
 });
 
 useTooltip(renoteButton, async (showing) => {

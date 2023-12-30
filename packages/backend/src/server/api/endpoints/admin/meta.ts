@@ -13,10 +13,9 @@ import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 export const meta = {
 	tags: ['meta'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'read:admin:meta',
 
 	res: {
 		type: 'object',
@@ -147,6 +146,14 @@ export const meta = {
 				optional: false, nullable: false,
 				items: {
 					type: 'string',
+				},
+			},
+			bannedEmailDomains: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 			preservedUsernames: {
@@ -392,6 +399,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			shortName: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			objectStorageS3ForcePathStyle: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -537,6 +548,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableAchievements: instance.enableAchievements,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
+				bannedEmailDomains: instance.bannedEmailDomains,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
 				enableFanoutTimeline: instance.enableFanoutTimeline,
