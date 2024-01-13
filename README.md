@@ -1,12 +1,20 @@
-<div align="center">
-<a href="https://joinsharkey.org/">
-	<img src="https://raw.githubusercontent.com/transfem-org/Sharkey/5180b4093f30e3bf3ff8d6b16751b69ebed9fb12/packages/frontend/assets/sharkey.svg" alt="Sharkey logo" style="border-radius:50%" width="400"/>
-</a>
-
 **🌎 **[Sharkey](https://joinsharkey.org/)** is an open source, decentralized social media platform that's free forever! 🚀**
 
----
+**Note:** This repo contains some changes specifically made for [Sakurajima Social](https://sakurajima.social) and will contain references to it. This repo is here to comply with the AGPL and also deploy changes to our instance. Use at your own risk, using the official repo is recommended.
 
+# Differences from the Upstream Version (all on the Frontend)
+* "Have a look at the timeline" is a button instead a timeline widget when logged out so the user can view the local and global timelines comfortably.
+* Change interface font to match Sakurajima Mastodon server
+* Sakura themes are the default themes along with Yozakura for dark mode. They are built into thias version
+* Added menu items pertaining to Sakurajima in the instance menu
+* Added Rose Pine themes from Firefish
+* Removed the Advertisement menu item (Sakurajima Social has no ads and never will)
+* Different defaults to make Sharkey more approachable for users who used Twitter/X.
+* Added link to the repo of the Sakura version of Sharkey.
+* Only show public posts from non-silenced hosts for tag search.
+
+---
+<div align="center">
 <a href="https://joinsharkey.org">
 		<img src="https://custom-icon-badges.herokuapp.com/badge/find_an-instance-acea31?logoColor=acea31&style=for-the-badge&logo=sharkey&labelColor=363B40" alt="find an instance"/></a>
 
@@ -52,7 +60,3 @@ With Sharkey, you can enable sign-ups, subject to manual moderator approval and 
 </div>
 
 <div style="clear: both;"></div>
-
-## Documentation
-
-Sharkey Documentation can be found at [Sharkey Documentation](https://docs.joinsharkey.org/docs/install/fresh/)

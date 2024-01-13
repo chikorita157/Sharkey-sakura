@@ -33,6 +33,11 @@ export const getBuiltinThemes = () => Promise.all(
 		'l-cherry',
 		'l-sushi',
 		'l-u0',
+		'l-rosepinedawn',
+		'l-sakura',
+		'l-sakurajima-sakura',
+		'l-gekka',
+		'l-holiday',
 
 		'd-dark',
 		'd-persimmon',
@@ -44,8 +49,9 @@ export const getBuiltinThemes = () => Promise.all(
 		'd-cherry',
 		'd-ice',
 		'd-u0',
-		'rosepine',
-		'rosepine-dawn',
+		'd-rosepine',
+		'd-rosepinemoon',
+		'd-yozakura'
 	].map(name => import(`@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
