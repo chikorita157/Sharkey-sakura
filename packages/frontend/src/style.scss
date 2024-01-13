@@ -1,12 +1,6 @@
 @charset "utf-8";
 
-@font-face {
-	font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-	font-family: 'Lexend';
-	font-style: normal;
-	font-weight: 400;
-	src: url('/static-assets/fonts/Lexend-VariableFont_wght.ttf') format('opentype');
-}
+@import url("https://use.typekit.net/cjy0pnw.css");
 
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
@@ -65,7 +59,7 @@ html {
 	accent-color: var(--accent);
 	overflow: auto;
 	overflow-wrap: break-word;
-	font-family: 'sharkey-theme-font-face', 'Lexend', 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	font-family: myriad-pro, 'sharkey-theme-font-face','Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 1.35;
 	text-size-adjust: 100%;

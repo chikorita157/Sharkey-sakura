@@ -165,14 +165,14 @@ export const defaultStore = markRaw(new Storage('base', {
 	menu: {
 		where: 'deviceAccount',
 		default: [
-			'notifications',
 			'explore',
+			'notifications',
 			'followRequests',
-			'-',
-			'announcements',
-			'search',
-			'-',
 			'favorites',
+			'lists',
+			'search',
+			'lookup',
+			'profile',
 			'drive',
 			'achievements',
 		],
@@ -370,7 +370,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	squareAvatars: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	showAvatarDecorations: {
 		where: 'device',
@@ -562,8 +562,8 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
-import lightTheme from '@/themes/l-cherry.json5';
-import darkTheme from '@/themes/d-ice.json5';
+import lightTheme from '@/themes/l-sakurajima-sakura.json5';
+import darkTheme from '@/themes/d-yozakura.json5';
 
 export class ColdDeviceStorage {
 	public static default = {
