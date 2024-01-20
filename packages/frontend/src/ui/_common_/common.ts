@@ -63,7 +63,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: 'Main Site',
 		icon: 'ph-notebook ph-bold ph-lg',
 		action: () => {
-			window.open('https://joinsakurajima.moe', '_blank');
+			window.open('https://joinsakurajima.org', '_blank');
 		},
 	},{
 		text: 'Forums',
