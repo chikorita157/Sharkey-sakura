@@ -60,10 +60,10 @@ export function openInstanceMenu(ev: MouseEvent) {
 		icon: 'ph-globe-hemisphere-west ph-bold ph-lg',
 		to: '/about#federation',
 	},{
-		text: 'Blog',
-		icon: 'ph-newspaper-clipping ph-bold ph-lg',
+		text: 'Main Site',
+		icon: 'ph-notebook ph-bold ph-lg',
 		action: () => {
-			window.open('https://blog.sakurajima.moe', '_blank');
+			window.open('https://joinsakurajima.moe', '_blank');
 		},
 	},{
 		text: 'Forums',
@@ -115,6 +115,12 @@ export function openInstanceMenu(ev: MouseEvent) {
 		icon: 'ph-question ph-bold ph-lg',
 		action: () => {
 			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
+		},
+	},{
+		text: 'Misskey Guides',
+		icon: 'ph-question ph-bold ph-lg',
+		action: () => {
+			window.open('https://forums.sakurajima.moe/resources/categories/misskey-guides.3/', '_blank');
 		},
 	}, ($i) ? {
 		text: i18n.ts._initialTutorial.launchTutorial,
