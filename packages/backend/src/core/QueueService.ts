@@ -12,12 +12,13 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import { MiNote } from '@/models/Note.js';
+import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
+import { MrfService } from './activitypub/MrfService.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, DeliverJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
-import { MiNote } from '@/models/Note.js';
-import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 
 @Injectable()
 export class QueueService {
@@ -33,6 +34,8 @@ export class QueueService {
 		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
+
+		private mrfService: MrfService,
 	) {
 		this.systemQueue.add('tickCharts', {
 		}, {
@@ -72,8 +75,15 @@ export class QueueService {
 	}
 
 	@bindThis
-	public deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean) {
+	public deliver(user: ThinUser, _content: IActivity | null, _to: string | null, _isSharedInbox: boolean) {
+		const rewritten = this.mrfService.rewriteOutgoingSingular(_content, _to, _isSharedInbox);
+		if (rewritten == null) return null;
+		const { activity: content, inbox: to, isSharedInbox } = rewritten;
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (content == null) return null;
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (to == null) return null;
 
 		const contentBody = JSON.stringify(content);
@@ -107,7 +117,12 @@ export class QueueService {
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
+	public async deliverMany(user: ThinUser, _content: IActivity | null, _inboxes: Map<string, boolean>) {
+		const rewritten = this.mrfService.rewriteOutgoing(_content, _inboxes);
+		if (rewritten == null) return null;
+		const { activity: content, inboxes } = rewritten;
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
 		const digest = ApRequestCreator.createDigest(contentBody);

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { IObject } from '@/core/activitypub/type.js';
+import { IActivity, IObject } from '@/core/activitypub/type.js';
 import Logger from '@/logger.js';
 import { MiRemoteUser } from '@/models/User.js';
 
@@ -18,5 +18,12 @@ export class MRF {
 
 	incoming(actor: MiRemoteUser, activity: IObject): IObject|null {
 		return activity;
+	}
+
+	/**
+	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (if there is a single inbox in the map, do NOT add any new entries, they may not be counted!)
+	 */
+	outgoing(activity: IActivity, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
+		return { activity, inboxes };
 	}
 }

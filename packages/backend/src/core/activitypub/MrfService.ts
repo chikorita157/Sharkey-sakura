@@ -14,7 +14,7 @@ import type { MiRemoteUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { ApLoggerService } from './ApLoggerService.js';
-import { isDelete, type IObject, isUndo, isBlock } from './type.js';
+import { isDelete, type IObject, isUndo, isBlock, IActivity } from './type.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -75,5 +75,54 @@ export class MrfService implements OnModuleInit {
 		}
 
 		return activity;
+	}
+
+	@bindThis
+	public rewriteOutgoing(_activity: IActivity|null, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
+		if (_activity == null) {
+			return null;
+		}
+
+		let payload = { activity: _activity, inboxes };
+
+		for (const mrf of this.loadedMrfs) {
+			try {
+				mrf.logger.debug('rewriting outgoing activity', payload);
+				const rewritten = mrf.outgoing(payload.activity, payload.inboxes);
+				if (rewritten == null) {
+					return null;
+				}
+
+				payload = rewritten;
+			} catch (e) {
+				mrf.logger.error('error rewriting incoming message, skipping!', e as Error);
+			}
+		}
+
+		return payload;
+	}
+
+	@bindThis
+	public rewriteOutgoingSingular(activity: IActivity|null, _inbox: string|null, _isSharedInbox: boolean): { activity: IActivity, inbox: string|null, isSharedInbox: boolean } | null {
+		const mrfInboxMap = new Map();
+		mrfInboxMap.set(_inbox, _isSharedInbox);
+
+		const rewritten = this.rewriteOutgoing(activity, mrfInboxMap);
+
+		if (rewritten == null) {
+			return null;
+		}
+
+		if (rewritten.inboxes.size < 1) {
+			return null;
+		}
+
+		const [inbox, isSharedInbox] = rewritten.inboxes.entries().next().value;
+
+		return {
+			activity: rewritten.activity,
+			inbox,
+			isSharedInbox,
+		};
 	}
 }
