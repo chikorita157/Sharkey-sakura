@@ -123,6 +123,7 @@ import { ApDeliverManagerService } from './activitypub/ApDeliverManagerService.j
 import { ApInboxService } from './activitypub/ApInboxService.js';
 import { ApLoggerService } from './activitypub/ApLoggerService.js';
 import { ApMfmService } from './activitypub/ApMfmService.js';
+import { MrfService } from './activitypub/MrfService.js';
 import { ApRendererService } from './activitypub/ApRendererService.js';
 import { ApRequestService } from './activitypub/ApRequestService.js';
 import { ApResolverService } from './activitypub/ApResolverService.js';
@@ -261,6 +262,7 @@ const $ApDeliverManagerService: Provider = { provide: 'ApDeliverManagerService',
 const $ApInboxService: Provider = { provide: 'ApInboxService', useExisting: ApInboxService };
 const $ApLoggerService: Provider = { provide: 'ApLoggerService', useExisting: ApLoggerService };
 const $ApMfmService: Provider = { provide: 'ApMfmService', useExisting: ApMfmService };
+const $MrfService: Provider = { provide: 'MrfService', useExisting: MrfService };
 const $ApRendererService: Provider = { provide: 'ApRendererService', useExisting: ApRendererService };
 const $ApRequestService: Provider = { provide: 'ApRequestService', useExisting: ApRequestService };
 const $ApResolverService: Provider = { provide: 'ApResolverService', useExisting: ApResolverService };
@@ -400,6 +402,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ApInboxService,
 		ApLoggerService,
 		ApMfmService,
+		MrfService,
 		ApRendererService,
 		ApRequestService,
 		ApResolverService,
@@ -535,6 +538,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ApInboxService,
 		$ApLoggerService,
 		$ApMfmService,
+		$MrfService,
 		$ApRendererService,
 		$ApRequestService,
 		$ApResolverService,
@@ -670,6 +674,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ApInboxService,
 		ApLoggerService,
 		ApMfmService,
+		MrfService,
 		ApRendererService,
 		ApRequestService,
 		ApResolverService,
@@ -804,6 +809,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ApInboxService,
 		$ApLoggerService,
 		$ApMfmService,
+		$MrfService,
 		$ApRendererService,
 		$ApRequestService,
 		$ApResolverService,
