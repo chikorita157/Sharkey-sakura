@@ -14,7 +14,7 @@ import type { MiRemoteUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { ApLoggerService } from './ApLoggerService.js';
-import { isDelete, type IObject, isUndo, isBlock, IActivity } from './type.js';
+import { isDelete, type IObject, isUndo, isBlock, IActivity, type IActor } from './type.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -96,6 +96,27 @@ export class MrfService implements OnModuleInit {
 		}
 
 		return note;
+	}
+
+	@bindThis
+	public interceptIncomingActor(_actor: IActor): IActor|null {
+		let actor = _actor;
+
+		for (const mrf of this.loadedMrfs) {
+			try {
+				mrf.logger.debug('rewriting incoming person', actor);
+				const rewritten = mrf.interceptIncomingActor(actor);
+				if (rewritten == null) {
+					return null;
+				}
+
+				actor = rewritten;
+			} catch (e) {
+				mrf.logger.error('error rewriting incoming actor, skipping!', e as Error);
+			}
+		}
+
+		return actor;
 	}
 
 	@bindThis

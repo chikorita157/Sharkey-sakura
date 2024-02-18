@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { IActivity, IObject } from '@/core/activitypub/type.js';
+import { IActivity, IActor, IObject } from '@/core/activitypub/type.js';
 import Logger from '@/logger.js';
 import { MiRemoteUser } from '@/models/User.js';
 
@@ -31,6 +31,14 @@ export class MRF {
 	 */
 	interceptIncomingNote(note: IObject): IObject|null {
 		return note;
+	}
+
+	/**
+	 * @param actor Incoming Actor object. may be processed by other MRF policies
+	 * @returns the actor object to be processed. or null if this actor should be dropped (dropping actors may cause issues!)
+	 */
+	interceptIncomingActor(actor: IActor): IActor|null {
+		return actor;
 	}
 
 	/**

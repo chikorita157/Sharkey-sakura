@@ -39,6 +39,7 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
+import { MrfService } from '../MrfService.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { ApNoteService } from './ApNoteService.js';
@@ -75,6 +76,7 @@ export class ApPersonService implements OnModuleInit {
 	private instanceChart: InstanceChart;
 	private apLoggerService: ApLoggerService;
 	private accountMoveService: AccountMoveService;
+	private mrfService: MrfService;
 	private logger: Logger;
 
 	constructor(
@@ -123,6 +125,7 @@ export class ApPersonService implements OnModuleInit {
 		this.instanceChart = this.moduleRef.get('InstanceChart');
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.accountMoveService = this.moduleRef.get('AccountMoveService');
+		this.mrfService = this.moduleRef.get('MrfService');
 		this.logger = this.apLoggerService.logger;
 	}
 
@@ -281,7 +284,12 @@ export class ApPersonService implements OnModuleInit {
 		const object = await resolver.resolve(uri);
 		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
 
-		const person = this.validateActor(object, uri);
+		const _person = this.validateActor(object, uri);
+
+		const person = this.mrfService.interceptIncomingActor(_person);
+		if (person == null) {
+			throw new Error('dropping incoming person due to MRF');
+		}
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
