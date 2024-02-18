@@ -31,6 +31,7 @@ import { ApMfmService } from '../ApMfmService.js';
 import { ApDbResolverService } from '../ApDbResolverService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApAudienceService } from '../ApAudienceService.js';
+import { MrfService } from '../MrfService.js';
 import { ApPersonService } from './ApPersonService.js';
 import { extractApHashtags } from './tag.js';
 import { ApMentionService } from './ApMentionService.js';
@@ -76,6 +77,7 @@ export class ApNoteService {
 		private noteEditService: NoteEditService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
+		private mrfService: MrfService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -122,7 +124,13 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(value);
+		const _object = await resolver.resolve(value);
+
+		const object = this.mrfService.interceptIncomingNote(_object);
+		if (object == null) {
+			this.logger.debug('dropping incoming note due to MRF', _object);
+			return null;
+		}
 
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);

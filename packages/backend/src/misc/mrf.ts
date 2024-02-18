@@ -26,6 +26,14 @@ export class MRF {
 	}
 
 	/**
+	 * @param note Incoming Note object. may be processed by other MRF policies
+	 * @returns the note object to be processed. or null if this activity should be rejected
+	 */
+	interceptIncomingNote(note: IObject): IObject|null {
+		return note;
+	}
+
+	/**
 	 * @param activity Outgoing activity object. may be processed by other MRF policies
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (if there is a single inbox in the map, do NOT add any new entries, they may not be counted!)
 	 * @returns the activity and the inboxes it should be sent to. or null if delivery should be cancelled.

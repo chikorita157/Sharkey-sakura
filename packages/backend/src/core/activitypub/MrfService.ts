@@ -78,6 +78,27 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
+	public interceptIncomingNote(_note: IObject): IObject|null {
+		let note = _note;
+
+		for (const mrf of this.loadedMrfs) {
+			try {
+				mrf.logger.debug('rewriting incoming note', note);
+				const rewritten = mrf.interceptIncomingNote(note);
+				if (rewritten == null) {
+					return null;
+				}
+
+				note = rewritten;
+			} catch (e) {
+				mrf.logger.error('error rewriting incoming note, skipping!', e as Error);
+			}
+		}
+
+		return note;
+	}
+
+	@bindThis
 	public interceptOutgoingActivity(_activity: IActivity|null, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
 		if (_activity == null) {
 			return null;
