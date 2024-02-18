@@ -78,13 +78,13 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public interceptIncomingNote(_note: IObject): IObject|null {
+	public interceptIncomingNote(_note: IObject, isUpdate: boolean): IObject|null {
 		let note = _note;
 
 		for (const mrf of this.loadedMrfs) {
 			try {
 				mrf.logger.debug('rewriting incoming note', note);
-				const rewritten = mrf.interceptIncomingNote(note);
+				const rewritten = mrf.interceptIncomingNote(note, isUpdate);
 				if (rewritten == null) {
 					return null;
 				}
@@ -99,13 +99,13 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public interceptIncomingActor(_actor: IActor): IActor|null {
+	public interceptIncomingActor(_actor: IObject, isUpdate: boolean): IObject|null {
 		let actor = _actor;
 
 		for (const mrf of this.loadedMrfs) {
 			try {
 				mrf.logger.debug('rewriting incoming person', actor);
-				const rewritten = mrf.interceptIncomingActor(actor);
+				const rewritten = mrf.interceptIncomingActor(actor, isUpdate);
 				if (rewritten == null) {
 					return null;
 				}

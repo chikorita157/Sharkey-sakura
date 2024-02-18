@@ -126,7 +126,7 @@ export class ApNoteService {
 
 		const _object = await resolver.resolve(value);
 
-		const object = this.mrfService.interceptIncomingNote(_object);
+		const object = this.mrfService.interceptIncomingNote(_object, false);
 		if (object == null) {
 			this.logger.debug('dropping incoming note due to MRF', _object);
 			return null;
@@ -338,7 +338,13 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(value);
+		const _object = await resolver.resolve(value);
+
+		const object = this.mrfService.interceptIncomingNote(_object, true);
+		if (object == null) {
+			this.logger.debug('dropping incoming note due to MRF', _object);
+			return null;
+		}
 
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);

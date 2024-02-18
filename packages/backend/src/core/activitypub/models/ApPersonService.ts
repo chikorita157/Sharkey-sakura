@@ -281,15 +281,15 @@ export class ApPersonService implements OnModuleInit {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(uri);
-		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
+		const _object = await resolver.resolve(uri);
 
-		const _person = this.validateActor(object, uri);
-
-		const person = this.mrfService.interceptIncomingActor(_person);
-		if (person == null) {
+		const object = this.mrfService.interceptIncomingActor(_object, false);
+		if (object == null) {
 			throw new Error('dropping incoming person due to MRF');
 		}
+
+		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
+		const person = this.validateActor(object, uri);
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
@@ -465,7 +465,12 @@ export class ApPersonService implements OnModuleInit {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = hint ?? await resolver.resolve(uri);
+		const _object = hint ?? await resolver.resolve(uri);
+
+		const object = this.mrfService.interceptIncomingActor(_object, true);
+		if (object == null) {
+			throw new Error('dropping incoming person due to MRF');
+		}
 
 		const person = this.validateActor(object, uri);
 
