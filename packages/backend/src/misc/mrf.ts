@@ -16,14 +16,21 @@ export class MRF {
 		this.logger.info('reconfigured', config);
 	}
 
-	incoming(actor: MiRemoteUser, activity: IObject): IObject|null {
+	/**
+	 * @param actor MiRemoteUser that has sent this activity
+	 * @param activity Incoming Activity object. may be processed by other MRF policies
+	 * @returns the activity object to be processed. or null if this activity should be rejected
+	 */
+	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject|null {
 		return activity;
 	}
 
 	/**
+	 * @param activity Outgoing activity object. may be processed by other MRF policies
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (if there is a single inbox in the map, do NOT add any new entries, they may not be counted!)
+	 * @returns the activity and the inboxes it should be sent to. or null if delivery should be cancelled.
 	 */
-	outgoing(activity: IActivity, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
+	interceptOutgoingActivity(activity: IActivity, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
 		return { activity, inboxes };
 	}
 }

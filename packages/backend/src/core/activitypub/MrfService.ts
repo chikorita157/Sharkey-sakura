@@ -51,7 +51,7 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public rewriteIncoming(actor: MiRemoteUser, _activity: IObject): IObject|null {
+	public interceptIncomingActivity(actor: MiRemoteUser, _activity: IObject): IObject|null {
 		let activity = _activity;
 
 		// this is trivial to bypass but any roadblock is worth something
@@ -63,7 +63,7 @@ export class MrfService implements OnModuleInit {
 		for (const mrf of this.loadedMrfs) {
 			try {
 				mrf.logger.debug('rewriting incoming activity', activity);
-				const rewritten = mrf.incoming(actor, activity);
+				const rewritten = mrf.interceptIncomingActivity(actor, activity);
 				if (rewritten == null) {
 					return null;
 				}
@@ -78,7 +78,7 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public rewriteOutgoing(_activity: IActivity|null, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
+	public interceptOutgoingActivity(_activity: IActivity|null, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
 		if (_activity == null) {
 			return null;
 		}
@@ -88,7 +88,7 @@ export class MrfService implements OnModuleInit {
 		for (const mrf of this.loadedMrfs) {
 			try {
 				mrf.logger.debug('rewriting outgoing activity', payload);
-				const rewritten = mrf.outgoing(payload.activity, payload.inboxes);
+				const rewritten = mrf.interceptOutgoingActivity(payload.activity, payload.inboxes);
 				if (rewritten == null) {
 					return null;
 				}
@@ -103,11 +103,11 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public rewriteOutgoingSingular(activity: IActivity|null, _inbox: string|null, _isSharedInbox: boolean): { activity: IActivity, inbox: string|null, isSharedInbox: boolean } | null {
+	public interceptOutgoingActivitySingular(activity: IActivity|null, _inbox: string|null, _isSharedInbox: boolean): { activity: IActivity, inbox: string|null, isSharedInbox: boolean } | null {
 		const mrfInboxMap = new Map();
 		mrfInboxMap.set(_inbox, _isSharedInbox);
 
-		const rewritten = this.rewriteOutgoing(activity, mrfInboxMap);
+		const rewritten = this.interceptOutgoingActivity(activity, mrfInboxMap);
 
 		if (rewritten == null) {
 			return null;

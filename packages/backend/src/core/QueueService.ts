@@ -76,7 +76,7 @@ export class QueueService {
 
 	@bindThis
 	public deliver(user: ThinUser, _content: IActivity | null, _to: string | null, _isSharedInbox: boolean) {
-		const rewritten = this.mrfService.rewriteOutgoingSingular(_content, _to, _isSharedInbox);
+		const rewritten = this.mrfService.interceptOutgoingActivitySingular(_content, _to, _isSharedInbox);
 		if (rewritten == null) return null;
 		const { activity: content, inbox: to, isSharedInbox } = rewritten;
 
@@ -118,7 +118,7 @@ export class QueueService {
 	 */
 	@bindThis
 	public async deliverMany(user: ThinUser, _content: IActivity | null, _inboxes: Map<string, boolean>) {
-		const rewritten = this.mrfService.rewriteOutgoing(_content, _inboxes);
+		const rewritten = this.mrfService.interceptOutgoingActivity(_content, _inboxes);
 		if (rewritten == null) return null;
 		const { activity: content, inboxes } = rewritten;
 

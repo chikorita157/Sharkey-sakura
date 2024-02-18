@@ -14,7 +14,7 @@ function isLike(object: IObject): object is ILike {
 
 // eslint-disable-next-line import/no-default-export
 export default class extends MRF {
-	incoming(actor: MiRemoteUser, activity: IObject): IObject | null {
+	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject | null {
 		if (!isLike(activity)) {
 			return activity;
 		}
