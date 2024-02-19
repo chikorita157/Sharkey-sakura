@@ -20,7 +20,7 @@ function isActivity(object: IObject): object is IActivity {
 
 @Injectable()
 export default class Fep1b12AnnounceFix extends MRF implements IncomingActivityInterceptor {
-	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject | null {
+	async interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): Promise<IObject | null> {
 		if (!isAnnounce(activity)) {
 			return activity;
 		}

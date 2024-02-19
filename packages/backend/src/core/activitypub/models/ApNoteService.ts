@@ -126,7 +126,7 @@ export class ApNoteService {
 
 		const _object = await resolver.resolve(value);
 
-		const object = this.mrfService.interceptIncomingNote(_object, false);
+		const object = await this.mrfService.interceptIncomingNote(_object, false);
 		if (object == null) {
 			this.logger.debug('dropping incoming note due to MRF', _object);
 			return null;
@@ -340,7 +340,7 @@ export class ApNoteService {
 
 		const _object = await resolver.resolve(value);
 
-		const object = this.mrfService.interceptIncomingNote(_object, true);
+		const object = await this.mrfService.interceptIncomingNote(_object, true);
 		if (object == null) {
 			this.logger.debug('dropping incoming note due to MRF', _object);
 			return null;

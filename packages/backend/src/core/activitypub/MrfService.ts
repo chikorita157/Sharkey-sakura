@@ -54,7 +54,7 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public interceptIncomingActivity(actor: MiRemoteUser, _activity: IObject): IObject|null {
+	public async interceptIncomingActivity(actor: MiRemoteUser, _activity: IObject): Promise<IObject|null> {
 		let activity = _activity;
 
 		// this is trivial to bypass but any roadblock is worth something
@@ -66,7 +66,7 @@ export class MrfService implements OnModuleInit {
 		for (const mrf of this.loadedMrfs.filter(canInterceptIncomingActivity)) {
 			try {
 				mrf.logger.debug('rewriting incoming activity', activity);
-				const rewritten = mrf.interceptIncomingActivity(actor, activity);
+				const rewritten = await mrf.interceptIncomingActivity(actor, activity);
 				if (rewritten == null) {
 					return null;
 				}
@@ -81,13 +81,13 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public interceptIncomingNote(_note: IObject, isUpdate: boolean): IObject|null {
+	public async interceptIncomingNote(_note: IObject, isUpdate: boolean): Promise<IObject|null> {
 		let note = _note;
 
 		for (const mrf of this.loadedMrfs.filter(canInterceptNote)) {
 			try {
 				mrf.logger.debug('rewriting incoming note', note);
-				const rewritten = mrf.interceptIncomingNote(note, isUpdate);
+				const rewritten = await mrf.interceptIncomingNote(note, isUpdate);
 				if (rewritten == null) {
 					return null;
 				}
@@ -102,13 +102,13 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public interceptIncomingActor(_actor: IObject, isUpdate: boolean): IObject|null {
+	public async interceptIncomingActor(_actor: IObject, isUpdate: boolean): Promise<IObject|null> {
 		let actor = _actor;
 
 		for (const mrf of this.loadedMrfs.filter(canInterceptActor)) {
 			try {
 				mrf.logger.debug('rewriting incoming person', actor);
-				const rewritten = mrf.interceptIncomingActor(actor, isUpdate);
+				const rewritten = await mrf.interceptIncomingActor(actor, isUpdate);
 				if (rewritten == null) {
 					return null;
 				}
@@ -123,7 +123,7 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public interceptOutgoingActivity(_activity: IActivity|null, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null {
+	public async interceptOutgoingActivity(_activity: IActivity|null, inboxes: Map<string, boolean>): Promise<{ activity: IActivity, inboxes: Map<string, boolean> } | null> {
 		if (_activity == null) {
 			return null;
 		}
@@ -133,7 +133,7 @@ export class MrfService implements OnModuleInit {
 		for (const mrf of this.loadedMrfs.filter(canInterceptOutgoingActivity)) {
 			try {
 				mrf.logger.debug('rewriting outgoing activity', payload);
-				const rewritten = mrf.interceptOutgoingActivity(payload.activity, payload.inboxes);
+				const rewritten = await mrf.interceptOutgoingActivity(payload.activity, payload.inboxes);
 				if (rewritten == null) {
 					return null;
 				}
@@ -148,11 +148,11 @@ export class MrfService implements OnModuleInit {
 	}
 
 	@bindThis
-	public interceptOutgoingActivitySingular(activity: IActivity|null, _inbox: string|null, _isSharedInbox: boolean): { activity: IActivity, inbox: string|null, isSharedInbox: boolean } | null {
+	public async interceptOutgoingActivitySingular(activity: IActivity|null, _inbox: string|null, _isSharedInbox: boolean): Promise<{ activity: IActivity, inbox: string|null, isSharedInbox: boolean } | null> {
 		const mrfInboxMap = new Map();
 		mrfInboxMap.set(_inbox, _isSharedInbox);
 
-		const rewritten = this.interceptOutgoingActivity(activity, mrfInboxMap);
+		const rewritten = await this.interceptOutgoingActivity(activity, mrfInboxMap);
 
 		if (rewritten == null) {
 			return null;

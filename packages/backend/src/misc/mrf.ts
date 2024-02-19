@@ -14,7 +14,7 @@ export interface IncomingActivityInterceptor extends MRF {
 	 * @param activity Incoming Activity object. may be processed by other MRF policies
 	 * @returns the activity object to be processed. or null if this activity should be rejected
 	 */
-	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject|null;
+	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): Promise<IObject|null>;
 }
 
 export function canInterceptIncomingActivity(mrf: MRF): mrf is IncomingActivityInterceptor {
@@ -27,7 +27,7 @@ export interface OutgoingActivityInterceptor extends MRF {
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (if there is a single inbox in the map, do NOT add any new entries, they may not be counted!)
 	 * @returns the activity and the inboxes it should be sent to. or null if delivery should be cancelled.
 	 */
-	interceptOutgoingActivity(activity: IActivity, inboxes: Map<string, boolean>): { activity: IActivity, inboxes: Map<string, boolean> } | null;
+	interceptOutgoingActivity(activity: IActivity, inboxes: Map<string, boolean>): Promise<{ activity: IActivity, inboxes: Map<string, boolean> } | null>;
 }
 
 export function canInterceptOutgoingActivity(mrf: MRF): mrf is OutgoingActivityInterceptor {
@@ -40,7 +40,7 @@ export interface NoteInterceptor extends MRF {
 	 * @param isUpdate true if this is an update to an existing note, false if this a brand new note
 	 * @returns the note object to be processed. or null if this note should be dropped
 	 */
-	interceptIncomingNote(note: IObject, isUpdate: boolean): IObject|null;
+	interceptIncomingNote(note: IObject, isUpdate: boolean): Promise<IObject|null>;
 }
 
 export function canInterceptNote(mrf: MRF): mrf is NoteInterceptor {
@@ -53,7 +53,7 @@ export interface ActorInterceptor extends MRF {
 	 * @param isUpdate true if this is an update to an existing note, false if this a brand new note
 	 * @returns the actor object to be processed. or null if this actor should be dropped (dropping actors may cause issues!)
 	 */
-	interceptIncomingActor(actor: IObject, isUpdate: boolean): IObject|null;
+	interceptIncomingActor(actor: IObject, isUpdate: boolean): Promise<IObject|null>;
 }
 
 export function canInterceptActor(mrf: MRF): mrf is ActorInterceptor {

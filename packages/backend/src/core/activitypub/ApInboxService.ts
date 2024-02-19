@@ -126,7 +126,7 @@ export class ApInboxService {
 	public async performOneActivity(actor: MiRemoteUser, _activity: IObject): Promise<void> {
 		if (actor.isSuspended) return;
 
-		const activity = this.mrfService.interceptIncomingActivity(actor, _activity);
+		const activity = await this.mrfService.interceptIncomingActivity(actor, _activity);
 		if (activity == null) {
 			this.logger.debug('dropping incoming activity due to MRF', _activity);
 			return;

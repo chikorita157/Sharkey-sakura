@@ -283,7 +283,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const _object = await resolver.resolve(uri);
 
-		const object = this.mrfService.interceptIncomingActor(_object, false);
+		const object = await this.mrfService.interceptIncomingActor(_object, false);
 		if (object == null) {
 			throw new Error('dropping incoming person due to MRF');
 		}
@@ -467,7 +467,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const _object = hint ?? await resolver.resolve(uri);
 
-		const object = this.mrfService.interceptIncomingActor(_object, true);
+		const object = await this.mrfService.interceptIncomingActor(_object, true);
 		if (object == null) {
 			throw new Error('dropping incoming person due to MRF');
 		}

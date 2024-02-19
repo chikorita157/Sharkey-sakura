@@ -17,7 +17,7 @@ function isLike(object: IObject): object is ILike {
 
 @Injectable()
 export default class SharkeyReactionFix extends MRF implements IncomingActivityInterceptor {
-	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject | null {
+	async interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): Promise<IObject | null> {
 		if (!isLike(activity)) {
 			return activity;
 		}

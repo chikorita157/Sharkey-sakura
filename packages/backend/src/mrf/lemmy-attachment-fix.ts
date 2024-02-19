@@ -14,7 +14,7 @@ const VALID_REGEX = /(\/pictrs\/|\.(mp[34]|png|jpe?g|web[pm]|gif)$)/;
 
 @Injectable()
 export default class LemmyAttachmentFix extends MRF implements NoteInterceptor {
-	interceptIncomingNote(_note: IObject, isUpdate: boolean): IObject | null {
+	async interceptIncomingNote(_note: IObject, isUpdate: boolean): Promise<IObject | null> {
 		if (!isPost(_note)) { return _note; }
 		const note = _note as IPost;
 
