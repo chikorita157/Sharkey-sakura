@@ -1,15 +1,21 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { Injectable } from '@nestjs/common';
+import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 import { IActivity, IObject } from '@/core/activitypub/type.js';
 import Logger from '@/logger.js';
 import { MiRemoteUser } from '@/models/User.js';
 
+@Injectable()
 export class MRF {
 	private config: object;
+	logger: Logger;
 
 	constructor(
-		public logger: Logger,
-	) {}
+		apLoggerService: ApLoggerService,
+	) {
+		this.logger = apLoggerService.logger.createSubLogger('mrf').createSubLogger(this.constructor.name);
+	}
 
 	reconfigure(config: object) {
 		this.config = config;

@@ -7,6 +7,7 @@ import * as Path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { bindThis } from '@/decorators.js';
 import Logger from '@/logger.js';
 import { MRF } from '@/misc/mrf.js';
@@ -14,7 +15,7 @@ import type { MiRemoteUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { ApLoggerService } from './ApLoggerService.js';
-import { isDelete, type IObject, isUndo, isBlock, IActivity, type IActor } from './type.js';
+import { isDelete, type IObject, isUndo, isBlock, IActivity } from './type.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -30,6 +31,8 @@ export class MrfService implements OnModuleInit {
 		@Inject(DI.config)
 		private config: Config,
 
+		private moduleRef: ModuleRef,
+
 		apLoggerService: ApLoggerService,
 	) {
 		this.logger = apLoggerService.logger.createSubLogger('mrf');
@@ -43,7 +46,7 @@ export class MrfService implements OnModuleInit {
 			// this is the transpiled name and hence needs to be .js and not .ts
 			const mrfModulePath = Path.resolve(mrfPath, `${name}.js`);
 			const mrfClass = (await import(mrfModulePath)).default;
-			const mrf: MRF = new mrfClass(this.logger.createSubLogger(name));
+			const mrf: MRF = await this.moduleRef.create(mrfClass);
 
 			mrf.reconfigure(cfg);
 			this.loadedMrfs.push(mrf);

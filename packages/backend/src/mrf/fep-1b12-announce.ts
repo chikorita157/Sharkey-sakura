@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
+/* eslint-disable import/no-default-export */
+
 /**
  * Unwraps the activities arriving from FEP-1b12 compatible groups (e.g. Lemmy)
  */
 
+import { Injectable } from '@nestjs/common';
 import { IActivity, IObject, getApType, isAnnounce } from '@/core/activitypub/type.js';
 import { MRF } from '@/misc/mrf.js';
 import { MiRemoteUser } from '@/models/User.js';
@@ -15,8 +18,8 @@ function isActivity(object: IObject): object is IActivity {
 	return validActivity.includes(getApType(object));
 }
 
-// eslint-disable-next-line import/no-default-export
-export default class extends MRF {
+@Injectable()
+export default class Fep1b12AnnounceFix extends MRF {
 	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject | null {
 		if (!isAnnounce(activity)) {
 			return activity;
