@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { IActivity, IObject, getApType, isAnnounce } from '@/core/activitypub/type.js';
-import { MRF } from '@/misc/mrf.js';
+import { IncomingActivityInterceptor, MRF } from '@/misc/mrf.js';
 import { MiRemoteUser } from '@/models/User.js';
 
 // https://join-lemmy.org/docs/contributors/05-federation.html#announce
@@ -19,7 +19,7 @@ function isActivity(object: IObject): object is IActivity {
 }
 
 @Injectable()
-export default class Fep1b12AnnounceFix extends MRF {
+export default class Fep1b12AnnounceFix extends MRF implements IncomingActivityInterceptor {
 	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject | null {
 		if (!isAnnounce(activity)) {
 			return activity;

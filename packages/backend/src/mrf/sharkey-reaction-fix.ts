@@ -8,7 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { IObject, ILike, getApType } from '@/core/activitypub/type.js';
-import { MRF } from '@/misc/mrf.js';
+import { IncomingActivityInterceptor, MRF } from '@/misc/mrf.js';
 import { MiRemoteUser } from '@/models/User.js';
 
 function isLike(object: IObject): object is ILike {
@@ -16,7 +16,7 @@ function isLike(object: IObject): object is ILike {
 }
 
 @Injectable()
-export default class SharkeyReactionFix extends MRF {
+export default class SharkeyReactionFix extends MRF implements IncomingActivityInterceptor {
 	interceptIncomingActivity(actor: MiRemoteUser, activity: IObject): IObject | null {
 		if (!isLike(activity)) {
 			return activity;

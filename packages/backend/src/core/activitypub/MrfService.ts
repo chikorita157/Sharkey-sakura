@@ -10,7 +10,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { bindThis } from '@/decorators.js';
 import Logger from '@/logger.js';
-import { MRF } from '@/misc/mrf.js';
+import { MRF, canInterceptActor, canInterceptIncomingActivity, canInterceptNote, canInterceptOutgoingActivity } from '@/misc/mrf.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -63,7 +63,7 @@ export class MrfService implements OnModuleInit {
 			return activity;
 		}
 
-		for (const mrf of this.loadedMrfs) {
+		for (const mrf of this.loadedMrfs.filter(canInterceptIncomingActivity)) {
 			try {
 				mrf.logger.debug('rewriting incoming activity', activity);
 				const rewritten = mrf.interceptIncomingActivity(actor, activity);
@@ -84,7 +84,7 @@ export class MrfService implements OnModuleInit {
 	public interceptIncomingNote(_note: IObject, isUpdate: boolean): IObject|null {
 		let note = _note;
 
-		for (const mrf of this.loadedMrfs) {
+		for (const mrf of this.loadedMrfs.filter(canInterceptNote)) {
 			try {
 				mrf.logger.debug('rewriting incoming note', note);
 				const rewritten = mrf.interceptIncomingNote(note, isUpdate);
@@ -105,7 +105,7 @@ export class MrfService implements OnModuleInit {
 	public interceptIncomingActor(_actor: IObject, isUpdate: boolean): IObject|null {
 		let actor = _actor;
 
-		for (const mrf of this.loadedMrfs) {
+		for (const mrf of this.loadedMrfs.filter(canInterceptActor)) {
 			try {
 				mrf.logger.debug('rewriting incoming person', actor);
 				const rewritten = mrf.interceptIncomingActor(actor, isUpdate);
@@ -130,7 +130,7 @@ export class MrfService implements OnModuleInit {
 
 		let payload = { activity: _activity, inboxes };
 
-		for (const mrf of this.loadedMrfs) {
+		for (const mrf of this.loadedMrfs.filter(canInterceptOutgoingActivity)) {
 			try {
 				mrf.logger.debug('rewriting outgoing activity', payload);
 				const rewritten = mrf.interceptOutgoingActivity(payload.activity, payload.inboxes);

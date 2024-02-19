@@ -8,12 +8,12 @@
 
 import { Injectable } from '@nestjs/common';
 import { IObject, IPost, isPost } from '@/core/activitypub/type.js';
-import { MRF } from '@/misc/mrf.js';
+import { MRF, NoteInterceptor } from '@/misc/mrf.js';
 
 const VALID_REGEX = /(\/pictrs\/|\.(mp[34]|png|jpe?g|web[pm]|gif)$)/;
 
 @Injectable()
-export default class LemmyAttachmentFix extends MRF {
+export default class LemmyAttachmentFix extends MRF implements NoteInterceptor {
 	interceptIncomingNote(_note: IObject, isUpdate: boolean): IObject | null {
 		if (!isPost(_note)) { return _note; }
 		const note = _note as IPost;
