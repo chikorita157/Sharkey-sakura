@@ -6,6 +6,7 @@
 import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
+import { searchEngineMap } from './scripts/search-engine-map.js';
 import type { SoundType } from '@/scripts/sound.js';
 import type { BuiltinTheme as ShikiBuiltinTheme } from 'shiki';
 import { Storage } from '@/pizzax.js';
@@ -86,6 +87,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: false,
 	},
 	collapseRenotes: {
+		where: 'account',
+		default: false,
+	},
+	collapseNotesRepliedTo: {
 		where: 'account',
 		default: false,
 	},
@@ -307,6 +312,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	showTickerOnReplies: {
 		where: 'device',
 		default: false,
+	},
+	searchEngine: {
+		where: 'account',
+		default: Object.keys(searchEngineMap)[0],
 	},
 	noteDesign: {
 		where: 'device',
