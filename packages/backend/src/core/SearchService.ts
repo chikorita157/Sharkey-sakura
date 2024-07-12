@@ -8,6 +8,7 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { MiNote } from '@/models/Note.js';
 import { MiUser } from '@/models/_.js';
 import type { NotesRepository } from '@/models/_.js';
@@ -16,6 +17,7 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
+import type Logger from '@/logger.js';
 import type { Index, MeiliSearch } from 'meilisearch';
 import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -70,6 +72,8 @@ export class SearchService {
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
 	private elasticsearchNoteIndex: string | null = null;
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -89,10 +93,16 @@ export class SearchService {
 		private metaService: MetaService,
 		private utilityService: UtilityService,
 		private noteEntityService: NoteEntityService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('note:search');
+
 		if (meilisearch) {
-			this.meilisearchNoteIndex = meilisearch.index(`${this.config.meilisearch?.index}---notes`);
-			this.meilisearchNoteIndex.updateSettings({
+			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
+			if (config.meilisearch?.scope) {
+				this.meilisearchIndexScope = config.meilisearch.scope;
+			}
+			/*this.meilisearchNoteIndex.updateSettings({
 				searchableAttributes: [
 					'text',
 					'cw',
@@ -157,15 +167,12 @@ export class SearchService {
 							},
 						},
 					).catch((error) => {
-						console.error(error);
+						this.logger.error(error);
 					});
 				}
 			}).catch((error) => {
-				console.error(error);
+				this.logger.error('Error while checking if index exists', error);
 			});
-		}
-		if (config.meilisearch?.scope) {
-			this.meilisearchIndexScope = config.meilisearch.scope;
 		}
 	}
 
