@@ -339,6 +339,12 @@ const headerTabsWhenNotLogin = computed(() => [
 		icon: 'ph-planet ph-bold ph-lg',
 		iconOnly: true,
 	}] : []),
+	...(isBubbleTimelineAvailable ? [{
+	key: 'bubble',
+	title: 'Bubble',
+	icon: 'ph-drop ph-bold ph-lg',
+	iconOnly: true,
+	}] : []),
 	...(isGlobalTimelineAvailable ? [{
 		key: 'global',
 		title: i18n.ts._timelines.global,
