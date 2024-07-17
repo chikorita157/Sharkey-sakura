@@ -213,8 +213,8 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | 'bubble' | `li
 	}
 
 	defaultStore.set('tl', out);
-	if (['local', 'global'].includes(newSrc)) {
-		srcWhenNotSignin.value = newSrc as 'local' | 'global';
+	if (['local', 'bubble', 'global'].includes(newSrc)) {
+		srcWhenNotSignin.value = newSrc as 'local' | 'bubble' | 'global';
 	}
 }
 
