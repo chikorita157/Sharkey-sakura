@@ -1301,6 +1301,10 @@ export interface Locale extends ILocale {
      */
     "drive": string;
     /**
+     * 検索ドライブ
+     */
+    "driveSearchbarPlaceholder": string;
+    /**
      * ファイル名
      */
     "fileName": string;
@@ -9431,6 +9435,10 @@ export interface Locale extends ILocale {
              * 連携アプリからの通知
              */
             "app": string;
+            /**
+             * 編集済み
+             */
+            "edited": string;
         };
         "_actions": {
             /**

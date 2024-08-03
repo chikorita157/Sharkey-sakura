@@ -321,6 +321,7 @@ lightThemes: "明るいテーマ"
 darkThemes: "暗いテーマ"
 syncDeviceDarkMode: "デバイスのダークモードと同期する"
 drive: "ドライブ"
+driveSearchbarPlaceholder: "検索ドライブ"
 fileName: "ファイル名"
 selectFile: "ファイルを選択"
 selectFiles: "ファイルを選択"
@@ -2489,6 +2490,7 @@ _notification:
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
     app: "連携アプリからの通知"
+    edited: "編集済み"
 
   _actions:
     followBack: "フォローバック"
