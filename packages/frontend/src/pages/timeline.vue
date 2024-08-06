@@ -204,7 +204,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | 'bubble' | `list:${string}`): void {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'media' | 'global' | 'bubble' | 'bubblemedia' |`list:${string}`): void {
 	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
 
 	if (newSrc.startsWith('userList:')) {
