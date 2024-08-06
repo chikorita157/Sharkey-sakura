@@ -223,6 +223,7 @@ function updatePaginationQuery() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: true,
+			withBots: props.withBots,
 		};
 	}  else if (props.src === 'bubble') {
 		endpoint = 'notes/bubble-timeline';
