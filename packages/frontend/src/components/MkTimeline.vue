@@ -122,11 +122,9 @@ function connectChannel() {
 			withBots: props.withBots,
 		});
 	} else if (props.src === 'media') {
-		connection = stream.useChannel('hybridTimeline', {
+		connection = stream.useChannel('homeTimeline', {
 			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
 			withFiles: true,
-			withBots: props.withBots,
 		});
 	} else if (props.src === 'bubble') {
 		connection = stream.useChannel('bubbleTimeline', {
