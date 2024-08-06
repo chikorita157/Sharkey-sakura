@@ -69,7 +69,7 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'bubble' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed<'home' | 'local' | 'social' | 'global' | 'bubble' | `list:${string}`>({
+const src = computed<'home' | 'local' | 'social' | 'media' | 'global' | 'bubble' | 'bubblemedia' | `list:${string}`>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
@@ -301,6 +301,11 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	icon: 'ti ti-planet',
 	iconOnly: true,
 }, {
+	key: 'media',
+	title: 'Media',
+	icon: 'ti ti-photo',
+	iconOnly: true,
+}, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-universe',
@@ -309,6 +314,11 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	key: 'bubble',
 	title: 'Bubble',
 	icon: 'ph-drop ph-bold ph-lg',
+	iconOnly: true,
+}] : []), ...(isBubbleTimelineAvailable ? [{
+	key: 'bubblemedia',
+	title: 'Bubble Media',
+	icon: 'ti ti-photo',
 	iconOnly: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',

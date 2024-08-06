@@ -29,7 +29,7 @@ import { defaultStore } from '@/store.js';
 import { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
-	src: 'home' | 'local' | 'social' | 'bubble' | 'global' | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
+	src: 'home' | 'local' | 'media' | 'social' | 'bubble' | 'bubblemedia' | 'global' | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
 	list?: string;
 	antenna?: string;
 	channel?: string;
@@ -121,10 +121,23 @@ function connectChannel() {
 			withFiles: props.onlyFiles ? true : undefined,
 			withBots: props.withBots,
 		});
+	} else if (props.src === 'media') {
+		connection = stream.useChannel('hybridTimeline', {
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
+			withFiles: true,
+			withBots: props.withBots,
+		});
 	} else if (props.src === 'bubble') {
 		connection = stream.useChannel('bubbleTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+			withBots: props.withBots,
+		});
+	} else if (props.src === 'bubblemedia') {
+		connection = stream.useChannel('bubbleTimeline', {
+			withRenotes: props.withRenotes,
+			withFiles: true,
 			withBots: props.withBots,
 		});
 	} else if (props.src === 'global') {
