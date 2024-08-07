@@ -93,8 +93,7 @@ onMounted(() => {
 		disabled.value = (
 			(!((instance.policies.ltlAvailable) || ($i.policies.ltlAvailable)) && ['local', 'social'].includes(props.column.tl)) ||
 			(!((instance.policies.gtlAvailable) || ($i.policies.gtlAvailable)) && ['global'].includes(props.column.tl)) ||
-			(!((instance.policies.btlAvailable) || ($i.policies.btlAvailable)) && ['bubble'].includes(props.column.tl)) ||
-			(!((instance.policies.btlAvailable) || ($i.policies.btlAvailable)) && ['bubblemedia'].includes(props.column.tl)));
+			(!((instance.policies.btlAvailable) || ($i.policies.btlAvailable)) && ['bubble'].includes(props.column.tl)));
 	}
 });
 
