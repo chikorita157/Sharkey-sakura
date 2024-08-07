@@ -122,7 +122,7 @@ function connectChannel() {
 			withBots: props.withBots,
 		});
 	} else if (props.src === 'media') {
-			connection = stream.useChannel('hybridTimeline', {
+			connection = stream.useChannel('localTimeline', {
 				withRenotes: props.withRenotes,
 				withReplies: props.withReplies,
 				withFiles: props.onlyFiles ? true : undefined,
