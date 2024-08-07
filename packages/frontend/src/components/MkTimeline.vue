@@ -122,11 +122,12 @@ function connectChannel() {
 			withBots: props.withBots,
 		});
 	} else if (props.src === 'media') {
-		connection = stream.useChannel('homeTimeline', {
-			withRenotes: props.withRenotes,
-			withFiles: true,
-		});
-	} else if (props.src === 'bubble') {
+			connection = stream.useChannel('hybridTimeline', {
+				withRenotes: props.withRenotes,
+				withReplies: props.withReplies,
+				withFiles: props.onlyFiles ? true : undefined,
+				withBots: props.withBots,
+});	} else if (props.src === 'bubble') {
 		connection = stream.useChannel('bubbleTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
