@@ -93,7 +93,8 @@ onMounted(() => {
 		disabled.value = (
 			(!((instance.policies.ltlAvailable) || ($i.policies.ltlAvailable)) && ['local', 'social'].includes(props.column.tl)) ||
 			(!((instance.policies.gtlAvailable) || ($i.policies.gtlAvailable)) && ['global'].includes(props.column.tl)) ||
-			(!((instance.policies.btlAvailable) || ($i.policies.btlAvailable)) && ['bubble'].includes(props.column.tl)));
+			(!((instance.policies.btlAvailable) || ($i.policies.btlAvailable)) && ['bubble'].includes(props.column.tl)) ||
+			(!((instance.policies.btlAvailable) || ($i.policies.btlAvailable)) && ['bubblemedia'].includes(props.column.tl)));
 	}
 });
 
@@ -107,7 +108,12 @@ async function setType() {
 		}, {
 			value: 'social' as const, text: i18n.ts._timelines.social,
 		}, {
+			value: 'media' as const, text: 'Media',
+		}, {
 			value: 'bubble' as const, text: 'Bubble',
+		},
+		, {
+			value: 'bubblemedia' as const, text: 'Bubble Media',
 		}, {
 			value: 'global' as const, text: i18n.ts._timelines.global,
 		}],
