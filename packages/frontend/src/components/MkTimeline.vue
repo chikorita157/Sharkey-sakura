@@ -217,7 +217,7 @@ function updatePaginationQuery() {
 			withBots: props.withBots,
 		};
 	} else if (props.src === 'media') {
-		endpoint = 'notes/notes/local-timeline';
+		endpoint = 'notes/local-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
