@@ -1,4 +1,4 @@
-**🌎 **[Sharkey](https://joinsharkey.org/)** is an open source, decentralized social media platform that's free forever! 🚀**
+**🌎 **Sakurakey**, a soft fork of [Sharkey]](https://joinsharkey.org/ is an open source, decentralized social media platform that's free forever! 🚀**
 
 **Note:** This repo contains some changes specifically made for [Sakurajima Social](https://sakurajima.social) and will contain references to it. This repo is here to comply with the AGPL and also deploy changes to our instance. Use at your own risk, using the official repo is recommended.
 
@@ -13,32 +13,7 @@
 * Added link to the repo of the Sakura version of Sharkey.
 * Only show public posts from non-silenced hosts for tag search.
 
----
-<div align="center">
-<a href="https://joinsharkey.org">
-		<img src="https://custom-icon-badges.herokuapp.com/badge/find_an-instance-acea31?logoColor=acea31&style=for-the-badge&logo=sharkey&labelColor=363B40" alt="find an instance"/></a>
-
-<a href="https://docs.joinsharkey.org/docs/install/fresh/">
-		<img src="https://custom-icon-badges.herokuapp.com/badge/create_an-instance-FBD53C?logoColor=FBD53C&style=for-the-badge&logo=server&labelColor=363B40" alt="create an instance"/></a>
-
-<a href="./CONTRIBUTING.md">
-		<img src="https://custom-icon-badges.herokuapp.com/badge/become_a-contributor-A371F7?logoColor=A371F7&style=for-the-badge&logo=git-merge&labelColor=363B40" alt="become a contributor"/></a>
-
-<a href="https://discord.gg/6VgKmEqHNk">
-		<img src="https://custom-icon-badges.herokuapp.com/badge/join_the-community-5865F2?logoColor=5865F2&style=for-the-badge&logo=discord&labelColor=363B40" alt="join the community"/></a>
-
-<a href="https://ko-fi.com/transfem">
-		<img src="https://custom-icon-badges.herokuapp.com/badge/donate-F96854?logoColor=F96854&style=for-the-badge&logo=kofi&labelColor=363B40" alt="donate"/></a>
-<a href="https://hosted.weblate.org/projects/sharkey/">
-		<img src="https://custom-icon-badges.herokuapp.com/badge/translate-sharkey-124437?logoColor=acea31&style=for-the-badge&logo=translate-sharkey&labelColor=363B40" alt="Translate Sharkey"/></a>
-
----
-
-</div>
-
 <div>
-
-<a href="https://joinsharkey.org/"><img src="https://cdn.transfem.social/files/b2721164-e015-463e-b851-3e953dd0d9f9.webp" align="right" height="520px"/></a>
 
 ## ✨ Features
 - **ActivityPub support**\
