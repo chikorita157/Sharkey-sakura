@@ -1,4 +1,4 @@
-**🌎 **Sakurakey**, a soft fork of [Sharkey](https://joinsharkey.org/ is an open source, decentralized social media platform that's free forever! 🚀**
+**🌎 **Sakurakey**, a soft fork of [Sharkey](https://joinsharkey.org/) is an open source, decentralized social media platform that's free forever! 🚀**
 
 **Note:** This repo contains some changes specifically made for [Sakurajima Social](https://sakurajima.social) and will contain references to it. This repo is here to comply with the AGPL and also deploy changes to our instance. Use at your own risk, using the official repo is recommended.
 
