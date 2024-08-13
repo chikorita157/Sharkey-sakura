@@ -1,4 +1,4 @@
-**🌎 **Sakurakey**, a soft fork of [Sharkey]](https://joinsharkey.org/ is an open source, decentralized social media platform that's free forever! 🚀**
+**🌎 **Sakurakey**, a soft fork of [Sharkey](https://joinsharkey.org/ is an open source, decentralized social media platform that's free forever! 🚀**
 
 **Note:** This repo contains some changes specifically made for [Sakurajima Social](https://sakurajima.social) and will contain references to it. This repo is here to comply with the AGPL and also deploy changes to our instance. Use at your own risk, using the official repo is recommended.
 
@@ -11,7 +11,10 @@
 * Removed the Advertisement menu item (Sakurajima Social has no ads and never will)
 * Different defaults to make Sharkey more approachable for users who used Twitter/X.
 * Added link to the repo of the Sakura version of Sharkey.
-* Only show public posts from non-silenced hosts for tag search.
+* Removed Channels (Deprecated on this softfork)
+* Bubble Timeline viewable to visitors
+* Add Media and Bubble Media timelines (Shows only posts with Media), idea taken from Misskey.io
+* Only index Public notes, not notes that are Home/Unlisted/Silent Public
 
 <div>
 
