@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 						<div :class="$style.noteHeaderInfo">
 							<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
-								<i v-if="appearNote.visibility === 'home'" class="ph-house ph-bold ph-lg"></i>
+								<i v-if="appearNote.visibility === 'home'" class="ph-moon ph-bold ph-lg"></i>
 								<i v-else-if="appearNote.visibility === 'followers'" class="ph-lock ph-bold ph-lg"></i>
 								<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ph-envelope ph-bold ph-lg"></i>
 							</span>
