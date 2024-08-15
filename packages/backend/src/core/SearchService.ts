@@ -307,7 +307,7 @@ export class SearchService {
 				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
 				return true;
 			});
-			return await this.noteEntityService.packMany(notes, me);
+			return notes;
 			//return await query.limit(pagination.limit).getMany();
 		}
 	}
