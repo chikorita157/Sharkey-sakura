@@ -51,7 +51,7 @@ export function boostMenuItems(appearNote: Ref<Misskey.entities.Note>, renote: (
 	if (visibilityIsAtLeast(effectiveVisibility, 'home')) {
 		menuItems.push({
 			type: 'button',
-			icon: 'ph-house ph-bold ph-lg',
+			icon: 'ph-moon ph-bold ph-lg',
 			text: i18n.ts._visibility['home'],
 			action: () => {
 				renote('home', localOnly.value);
