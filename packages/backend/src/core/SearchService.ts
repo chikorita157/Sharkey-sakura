@@ -86,7 +86,6 @@ export class SearchService {
 		private utilityService: UtilityService,
 		private noteEntityService: NoteEntityService,
 	) {
-		const meta = this.metaService.fetch(true);
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${this.config.meilisearch?.index}---notes`);
 			this.meilisearchNoteIndex.updateSettings({
@@ -178,6 +177,7 @@ export class SearchService {
 		sinceId?: MiNote['id'];
 		limit?: number;
 	}): Promise<MiNote[]> {
+		const meta = await this.metaService.fetch(true);
 		if (this.meilisearch && !opts.disableMeili) {
 			const filter: Q = {
 				op: 'and',
