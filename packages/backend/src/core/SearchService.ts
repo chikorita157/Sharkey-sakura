@@ -86,7 +86,7 @@ export class SearchService {
 		private utilityService: UtilityService,
 		private noteEntityService: NoteEntityService,
 	) {
-		const meta = await this.metaService.fetch(true);
+		const meta = this.metaService.fetch(true);
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${this.config.meilisearch?.index}---notes`);
 			this.meilisearchNoteIndex.updateSettings({
