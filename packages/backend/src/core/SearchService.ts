@@ -281,6 +281,7 @@ export class SearchService {
 					query.andWhere('user.host = :host', { host: opts.host });
 				}
 			}
+			
 
 			if (opts.filetype) {
 				/* this is very ugly, but the "correct" solution would
@@ -296,6 +297,8 @@ export class SearchService {
 				  `{`) or later (after a `,`) */
 				query.andWhere(`note."attachedFileTypes"::varchar ~* :type`, { type: `[{,]${opts.filetype}/` });
 			}
+
+			query.andWhere('note.visibility = \'public\'');
 
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
