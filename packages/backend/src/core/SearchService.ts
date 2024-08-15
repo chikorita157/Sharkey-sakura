@@ -17,6 +17,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
+import { UtilityService } from '@/core/UtilityService.js';
 
 type K = string;
 type V = string | number | boolean;
@@ -79,6 +80,7 @@ export class SearchService {
 		private cacheService: CacheService,
 		private queryService: QueryService,
 		private idService: IdService,
+		private utilityService: UtilityService,
 	) {
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${this.config.meilisearch?.index}---notes`);
@@ -245,6 +247,8 @@ export class SearchService {
 			})).filter(note => {
 				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+				if (this.utilityService.isBlockedHost(meta.blockedHosts, note.userHost)) return false;
+				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
 				return true;
 			});
 			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
@@ -291,8 +295,14 @@ export class SearchService {
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
-
-			return await query.limit(pagination.limit).getMany();
+			
+			return await query.limit(pagination.limit).getMany().filter(note => {
+				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
+				if (note.user?.isSuspended) return false;
+				if (this.utilityService.isBlockedHost(meta.blockedHosts, note.userHost)) return false;
+				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
+				return true;
+			});
 		}
 	}
 }
