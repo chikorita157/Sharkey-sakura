@@ -15,6 +15,8 @@
 * Bubble Timeline viewable to visitors
 * Add Media and Bubble Media timelines (Shows only posts with Media), idea taken from Misskey.io
 * Only index Public notes, not notes that are Home/Unlisted/Silent Public
+* Only search public notes from non suspended/silenced servers and users.
+* "Home" visiblity renamed to "Quiet Public" (matching Mastodon) and use the moon icon and Local/Defederated posts use the home icon
 
 <div>
 
