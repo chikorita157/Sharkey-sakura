@@ -18,6 +18,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
 import { UtilityService } from '@/core/UtilityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 
 type K = string;
 type V = string | number | boolean;
@@ -81,6 +82,7 @@ export class SearchService {
 		private queryService: QueryService,
 		private idService: IdService,
 		private utilityService: UtilityService,
+		private noteEntityService: NoteEntityService,
 	) {
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${this.config.meilisearch?.index}---notes`);
@@ -295,14 +297,18 @@ export class SearchService {
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
-			
-			return await query.limit(pagination.limit).getMany().filter(note => {
+
+			let notes = await query.limit(pagination.limit).getMany();
+				
+			notes = notes.filter(note => {
 				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
 				if (note.user?.isSuspended) return false;
 				if (this.utilityService.isBlockedHost(meta.blockedHosts, note.userHost)) return false;
 				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
 				return true;
 			});
+			return await this.noteEntityService.packMany(notes, me);
+			//return await query.limit(pagination.limit).getMany();
 		}
 	}
 }
