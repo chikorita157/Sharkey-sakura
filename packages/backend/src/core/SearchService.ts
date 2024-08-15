@@ -17,6 +17,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
+import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 
@@ -81,9 +82,11 @@ export class SearchService {
 		private cacheService: CacheService,
 		private queryService: QueryService,
 		private idService: IdService,
+		private metaService: MetaService,
 		private utilityService: UtilityService,
 		private noteEntityService: NoteEntityService,
 	) {
+		const meta = await this.metaService.fetch(true);
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${this.config.meilisearch?.index}---notes`);
 			this.meilisearchNoteIndex.updateSettings({
