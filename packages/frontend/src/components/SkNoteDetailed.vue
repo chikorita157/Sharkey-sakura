@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.noteHeaderBody">
 					<div :class="$style.noteHeaderInfo">
 						<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
-							<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
+							<i v-if="appearNote.visibility === 'home'" class="ti ti-moon"></i>
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 						</span>
