@@ -97,7 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (!ps.withBots) query.andWhere('user.isBot = FALSE');
-			
+
 			if (ps.withRenotes === false) {
 				query.andWhere(new Brackets(qb => {
 					qb.where('note.renoteId IS NULL');
@@ -113,6 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			timeline = timeline.filter(note => {
 				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
+				if (!me && note.user?.isSilenced) return false;
 				return true;
 			});
 
