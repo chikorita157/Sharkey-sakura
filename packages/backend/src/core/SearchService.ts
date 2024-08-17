@@ -197,7 +197,7 @@ export class SearchService {
 			if (opts.filetype) {
 				if (opts.filetype === 'image') {
 					filter.qs.push({ op: 'or', qs: [
-						{ op: '=', k: 'attachedFileTypes', v: 'image/webp' }, 
+						{ op: '=', k: 'attachedFileTypes', v: 'image/webp' },
 						{ op: '=', k: 'attachedFileTypes', v: 'image/png' },
 						{ op: '=', k: 'attachedFileTypes', v: 'image/jpeg' },
 						{ op: '=', k: 'attachedFileTypes', v: 'image/avif' },
@@ -206,14 +206,14 @@ export class SearchService {
 					] });
 				} else if (opts.filetype === 'video') {
 					filter.qs.push({ op: 'or', qs: [
-						{ op: '=', k: 'attachedFileTypes', v: 'video/mp4' }, 
+						{ op: '=', k: 'attachedFileTypes', v: 'video/mp4' },
 						{ op: '=', k: 'attachedFileTypes', v: 'video/webm' },
 						{ op: '=', k: 'attachedFileTypes', v: 'video/mpeg' },
 						{ op: '=', k: 'attachedFileTypes', v: 'video/x-m4v' },
 					] });
 				} else if (opts.filetype === 'audio') {
 					filter.qs.push({ op: 'or', qs: [
-						{ op: '=', k: 'attachedFileTypes', v: 'audio/mpeg' }, 
+						{ op: '=', k: 'attachedFileTypes', v: 'audio/mpeg' },
 						{ op: '=', k: 'attachedFileTypes', v: 'audio/flac' },
 						{ op: '=', k: 'attachedFileTypes', v: 'audio/wav' },
 						{ op: '=', k: 'attachedFileTypes', v: 'audio/aac' },
@@ -252,6 +252,8 @@ export class SearchService {
 			})).filter(note => {
 				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
+				if (!me && note.user?.isSilenced) return false;
 				if (this.utilityService.isBlockedHost(meta.blockedHosts, note.userHost)) return false;
 				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
 				return true;
@@ -281,7 +283,7 @@ export class SearchService {
 					query.andWhere('user.host = :host', { host: opts.host });
 				}
 			}
-			
+
 
 			if (opts.filetype) {
 				/* this is very ugly, but the "correct" solution would
@@ -305,9 +307,10 @@ export class SearchService {
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 			let notes = await query.limit(pagination.limit).getMany();
-				
+
 			notes = notes.filter(note => {
 				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
+				if (!me && note.user?.isSilenced) return false;
 				if (note.user?.isSuspended) return false;
 				if (this.utilityService.isBlockedHost(meta.blockedHosts, note.userHost)) return false;
 				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
