@@ -10,6 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div><i class="ti ti-home"></i> <b>{{ i18n.ts._timelines.home }}</b> … {{ i18n.ts._initialTutorial._timeline.home }}</div>
 		<div><i class="ti ti-planet"></i> <b>{{ i18n.ts._timelines.local }}</b> … {{ i18n.ts._initialTutorial._timeline.local }}</div>
 		<div><i class="ti ti-universe"></i> <b>{{ i18n.ts._timelines.social }}</b> … {{ i18n.ts._initialTutorial._timeline.social }}</div>
+		<div><i class="ti ti-photo"></i> <b>Media</b> … is like the Social timeline, but only shows posts with media.</div>
+		<div><i class="ph-drop"></i> <b>Bubble</b> … shows a timeline of posts from servers specified by the administrator.</div>
+		<div><i class="ti ti-photo"></i> <b>Bubble Media</b> … shows a timeline of posts from servers specified by the administrator, but only media posts.</div>
 		<div><i class="ti ti-whirl"></i> <b>{{ i18n.ts._timelines.global }}</b> … {{ i18n.ts._initialTutorial._timeline.global }}</div>
 	</div>
 	<div class="_gaps_s">
