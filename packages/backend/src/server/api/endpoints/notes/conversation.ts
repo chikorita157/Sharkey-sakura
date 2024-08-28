@@ -71,16 +71,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				i++;
 				const p = await this.notesRepository.findOneBy({ id });
 				if (p == null) return;
-
-				if (i > ps.offset!) {
-					if (!p.user?.isSilenced && me && followings && p.userId == me.id && followings[p.userId]) continue;
-					else if (!me && p.user?.isSilenced) continue;
-					else if (p.user?.isSuspended) continue;
-					else if (this.utilityService.isBlockedHost(metaSvc.blockedHosts, p.userHost)) continue;
-					else if (this.utilityService.isSilencedHost(metaSvc.silencedHosts, p.userHost)) continue;
-					else {
+				let badReply = false;
+					if (!p.user?.isSilenced && me && followings && p.userId == me.id && followings[p.userId]) {badReply = true};
+					else if (!me && p.user?.isSilenced) {badReply = true};
+					else if (p.user?.isSuspended) {badReply = true};
+					else if (this.utilityService.isBlockedHost(metaSvc.blockedHosts, p.userHost)) {badReply = true};
+					else if (this.utilityService.isSilencedHost(metaSvc.silencedHosts, p.userHost)) {badReply = true};
+				if (i > ps.offset! && !badReply) {
 						conversation.push(p);
-					}
 				}
 
 				if (conversation.length === ps.limit) {
@@ -92,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			};
 
-			if (note.replyId) {
+			if (note.replyId && !badReply) {
 				await get(note.replyId);
 			}
 
