@@ -11,6 +11,8 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
+import { MetaService } from '@/core/MetaService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -56,6 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const metaSvc = await this.metaService.fetch(true);
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
@@ -70,7 +73,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (p == null) return;
 
 				if (i > ps.offset!) {
-					conversation.push(p);
+					if (!p.user?.isSilenced && me && followings && p.userId == me.id && followings[p.userId]) continue;
+					else if (!me && p.user?.isSilenced) continue;
+					else if (p.user?.isSuspended) continue;
+					else if (this.utilityService.isBlockedHost(metaSvc.blockedHosts, p.userHost)) continue;
+					else if (this.utilityService.isSilencedHost(metaSvc.silencedHosts, p.userHost)) continue;
+					else {
+						conversation.push(p);
+					}
 				}
 
 				if (conversation.length === ps.limit) {
