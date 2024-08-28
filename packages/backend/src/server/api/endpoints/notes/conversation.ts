@@ -72,11 +72,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const p = await this.notesRepository.findOneBy({ id });
 				if (p == null) return;
 				let badReply = false;
-					if (!p.user?.isSilenced && me && followings && p.userId == me.id && followings[p.userId]) {badReply = true;}
-					else if (!me && p.user?.isSilenced) {badReply = true;}
-					else if (p.user?.isSuspended) {badReply = true;}
-					else if (this.utilityService.isBlockedHost(metaSvc.blockedHosts, p.userHost)) {badReply = true;}
-					else if (this.utilityService.isSilencedHost(metaSvc.silencedHosts, p.userHost)) {badReply = true;}
+					if (p.user?.isSilenced && me && followings && p.userId == me.id && followings[p.userId]) {badReply = true;}
+					if (!me && p.user?.isSilenced) {badReply = true;}
+					if (p.user?.isSuspended) {badReply = true;}
+					if (this.utilityService.isBlockedHost(metaSvc.blockedHosts, p.userHost)) {badReply = true;}
+					if (this.utilityService.isSilencedHost(metaSvc.silencedHosts, p.userHost)) {badReply = true;}
 				if (i > ps.offset! && !badReply) {
 						conversation.push(p);
 				}
