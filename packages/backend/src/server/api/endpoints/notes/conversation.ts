@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			};
 
-			if (note.replyId && !badReply) {
+			if (note.replyId) {
 				await get(note.replyId);
 			}
 
