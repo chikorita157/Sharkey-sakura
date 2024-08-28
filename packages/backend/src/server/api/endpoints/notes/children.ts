@@ -77,9 +77,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
-			if (me) {
-				this.queryService.generateBlockedUserQuery(query, me);
-			}
+			if (me) this.queryService.generateMutedUserQuery(query, me);
+			if (me) this.queryService.generateBlockedUserQuery(query, me);
+
+			const [
+				followings,
+			] = me ? await Promise.all([
+				this.cacheService.userFollowingsCache.fetch(me.id),
+			]) : [undefined];
 
 			let notes = await query.limit(ps.limit).getMany();
 
