@@ -9,8 +9,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { MetaService } from '@/core/MetaService.js';
-import { UtilityService } from '@/core/UtilityService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -49,7 +47,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const metaSvc = await this.metaService.fetch(true);
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere('note.replyId = :replyId', { replyId: ps.noteId })
 				.innerJoinAndSelect('note.user', 'user')
@@ -62,16 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
-			let timeline = await query.limit(ps.limit).getMany();
-
-			timeline = timeline.filter(note => {
-				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
-				if (!me && note.user?.isSilenced) return false;
-				if (note.user?.isSuspended) return false;
-				if (this.utilityService.isBlockedHost(metaSvc.blockedHosts, note.userHost)) return false;
-				if (this.utilityService.isSilencedHost(metaSvc.silencedHosts, note.userHost)) return false;
-				return true;
-			});
+			const timeline = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(timeline, me);
 		});
