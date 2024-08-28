@@ -50,9 +50,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private metaService: MetaService,
-		private cacheService: CacheService,
-		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const metaSvc = await this.metaService.fetch(true);
@@ -92,11 +89,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let notes = await query.limit(ps.limit).getMany();
 
 			notes = notes.filter(note => {
-				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
-				if (!me && note.user?.isSilenced) return false;
+				//if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
+				//if (!me && note.user?.isSilenced) return false;
 				if (note.user?.isSuspended) return false;
-				if (this.utilityService.isBlockedHost(meta.blockedHosts, note.userHost)) return false;
-				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
+				//if (this.utilityService.isBlockedHost(metaSvc.blockedHosts, note.userHost)) return false;
+				//if (this.utilityService.isSilencedHost(metaSvc.silencedHosts, note.userHost)) return false;
 				return true;
 			});
 
