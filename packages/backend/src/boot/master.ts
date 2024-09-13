@@ -25,7 +25,7 @@ const _dirname = dirname(_filename);
 const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
 
 const logger = new Logger('core', 'cyan');
-const bootLogger = logger.createSubLogger('boot', 'magenta', false);
+const bootLogger = logger.createSubLogger('boot', 'magenta');
 
 const themeColor = chalk.hex('#86b300');
 
@@ -44,7 +44,7 @@ function greet() {
 		//#endregion
 
 		console.log(' Sharkey is an open-source decentralized microblogging platform.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like Sharkey, please donate to support development. https://ko-fi.com/transfem'));
+		console.log(chalk.rgb(255, 136, 0)(' If you like Sharkey, please donate to support development. https://opencollective.com/sharkey'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);

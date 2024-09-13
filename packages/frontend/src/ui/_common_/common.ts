@@ -92,30 +92,31 @@ export function openInstanceMenu(ev: MouseEvent) {
 		icon: 'ph-question ph-bold ph-lg',
 		to: '/contact',
 	}, (instance.impressumUrl) ? {
+		type: 'a',
 		text: i18n.ts.impressum,
-		icon: 'ph-newspaper-clipping ph-bold ph-lg',
-		action: () => {
-			window.open(instance.impressumUrl, '_blank', 'noopener');
-		},
+		icon: 'ti ti-file-invoice',
+		href: instance.impressumUrl,
+		target: '_blank',
 	} : undefined, (instance.tosUrl) ? {
+		type: 'a',
 		text: i18n.ts.termsOfService,
-		icon: 'ph-notebook ph-bold ph-lg',
-		action: () => {
-			window.open(instance.tosUrl, '_blank', 'noopener');
-		},
+		icon: 'ti ti-notebook',
+		href: instance.tosUrl,
+		target: '_blank',
 	} : undefined, (instance.privacyPolicyUrl) ? {
+		type: 'a',
 		text: i18n.ts.privacyPolicy,
-		icon: 'ph-shield ph-bold ph-lg',
-		action: () => {
-			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
-		},
+		icon: 'ti ti-shield-lock',
+		href: instance.privacyPolicyUrl,
+		target: '_blank',
 	} : undefined, (instance.donationUrl) ? {
+		type: 'a',
 		text: i18n.ts.donation,
 		icon: 'ph-hand-coins ph-bold ph-lg',
-		action: () => {
-			window.open(instance.donationUrl, '_blank', 'noopener');
-		},
+		href: instance.donationUrl,
+		target: '_blank',
 	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl && !instance.donationUrl) ? undefined : { type: 'divider' }, {
+		type: 'a',
 		text: i18n.ts.document,
 		icon: 'ph-libghtbulb ph-bold ph-lg',
 		action: () => {
@@ -131,12 +132,14 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts._initialTutorial.launchTutorial,
 		icon: 'ph-presentation ph-bold ph-lg',
 		action: () => {
-			os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {}, 'closed');
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {
+				closed: () => dispose(),
+			});
 		},
 	} : undefined, {
 		type: 'link',
 		text: i18n.ts.aboutMisskey,
-		icon: 'sk-icons sk-shark ph-bold',
+		icon: 'sk-icons sk-shark sk-icons-lg',
 		to: '/about-sharkey',
 	}], ev.currentTarget ?? ev.target, {
 		align: 'left',
