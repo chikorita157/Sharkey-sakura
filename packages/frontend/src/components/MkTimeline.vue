@@ -124,6 +124,7 @@ function connectChannel() {
 	} else if (props.src === 'media') {
 			connection = stream.useChannel('hybridTimeline', {
 				withRenotes: props.withRenotes,
+				withReplies: false,
 				withFiles: true,
 				withBots: props.withBots,
 });	} else if (props.src === 'bubble') {
@@ -219,6 +220,7 @@ function updatePaginationQuery() {
 		endpoint = 'notes/hybrid-timeline';
 		query = {
 			withRenotes: props.withRenotes,
+			withReplies: false,
 			withFiles: true,
 			withBots: props.withBots,
 		};
