@@ -295,11 +295,6 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	title: i18n.ts._timelines.home,
 	icon: 'ti ti-home',
 	iconOnly: true,
-}, {
-	key: 'media',
-	title: 'Media',
-	icon: 'ti ti-photo',
-	iconOnly: true,
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
@@ -309,6 +304,11 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-universe',
+	iconOnly: true,
+}, {
+	key: 'media',
+	title: 'Media',
+	icon: 'ti ti-photo',
 	iconOnly: true,
 }] : []), ...(isBubbleTimelineAvailable ? [{
 	key: 'bubble',
