@@ -122,10 +122,10 @@ function connectChannel() {
 			withBots: props.withBots,
 		});
 	} else if (props.src === 'media') {
-			connection = stream.useChannel('hybridTimeline', {
+			connection = stream.useChannel('localTimeline', {
 				withRenotes: props.withRenotes,
-				withReplies: false,
-				withFiles: true,
+				withReplies: props.withReplies,
+				withFiles: props.onlyFiles ? true : undefined,
 				withBots: props.withBots,
 });	} else if (props.src === 'bubble') {
 		connection = stream.useChannel('bubbleTimeline', {
@@ -217,10 +217,10 @@ function updatePaginationQuery() {
 			withBots: props.withBots,
 		};
 	} else if (props.src === 'media') {
-		endpoint = 'notes/hybrid-timeline';
+		endpoint = 'notes/local-timeline';
 		query = {
 			withRenotes: props.withRenotes,
-			withReplies: false,
+			withReplies: props.withReplies,
 			withFiles: true,
 			withBots: props.withBots,
 		};
