@@ -300,15 +300,15 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	title: i18n.ts._timelines.local,
 	icon: 'ti ti-planet',
 	iconOnly: true,
-},{
-	key: 'social',
-	title: i18n.ts._timelines.social,
-	icon: 'ti ti-universe',
-	iconOnly: true,
 }, {
 	key: 'media',
 	title: 'Media',
 	icon: 'ti ti-photo',
+	iconOnly: true,
+}, {
+	key: 'social',
+	title: i18n.ts._timelines.social,
+	icon: 'ti ti-universe',
 	iconOnly: true,
 }] : []), ...(isBubbleTimelineAvailable ? [{
 	key: 'bubble',
