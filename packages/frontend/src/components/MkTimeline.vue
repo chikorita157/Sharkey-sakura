@@ -30,7 +30,7 @@ import { defaultStore } from '@/store.js';
 import { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
-	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'role';
+	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
 	list?: string;
 	antenna?: string;
 	channel?: string;
@@ -56,15 +56,15 @@ provide('inTimeline', true);
 provide('inChannel', computed(() => props.src === 'channel'));
 
 type TimelineQueryType = {
-  antennaId?: string,
-  withRenotes?: boolean,
-  withReplies?: boolean,
-  withFiles?: boolean,
-  withBots?: boolean,
-  visibility?: string,
-  listId?: string,
-  channelId?: string,
-  roleId?: string
+	antennaId?: string,
+	withRenotes?: boolean,
+	withReplies?: boolean,
+	withFiles?: boolean,
+	withBots?: boolean,
+	visibility?: string,
+	listId?: string,
+	channelId?: string,
+	roleId?: string
 }
 
 const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
@@ -122,21 +122,10 @@ function connectChannel() {
 			withFiles: props.onlyFiles ? true : undefined,
 			withBots: props.withBots,
 		});
-	} else if (props.src === 'media') {
-			connection = stream.useChannel('hybridTimeline', {
-				withRenotes: props.withRenotes,
-				withFiles: true,
-				withBots: props.withBots,
-});	} else if (props.src === 'bubble') {
+	} else if (props.src === 'bubble') {
 		connection = stream.useChannel('bubbleTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
-			withBots: props.withBots,
-		});
-	} else if (props.src === 'bubblemedia') {
-		connection = stream.useChannel('bubbleTimeline', {
-			withRenotes: props.withRenotes,
-			withFiles: true,
 			withBots: props.withBots,
 		});
 	} else if (props.src === 'global') {
@@ -216,25 +205,11 @@ function updatePaginationQuery() {
 			withFiles: props.onlyFiles ? true : undefined,
 			withBots: props.withBots,
 		};
-	} else if (props.src === 'media') {
-		endpoint = 'notes/hybrid-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withFiles: true,
-			withBots: props.withBots,
-		};
-	}  else if (props.src === 'bubble') {
+	} else if (props.src === 'bubble') {
 		endpoint = 'notes/bubble-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
-			withBots: props.withBots,
-		};
-	}  else if (props.src === 'bubblemedia') {
-		endpoint = 'notes/bubble-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withFiles: true,
 			withBots: props.withBots,
 		};
 	} else if (props.src === 'global') {
