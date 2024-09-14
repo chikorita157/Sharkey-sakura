@@ -217,25 +217,11 @@ function updatePaginationQuery() {
 			withFiles: props.onlyFiles ? true : undefined,
 			withBots: props.withBots,
 		};
-	} else if (props.src === 'media') {
-		endpoint = 'notes/hybrid-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
-			withFiles: true,
-		};
-	}  else if (props.src === 'bubble') {
+	} else if (props.src === 'bubble') {
 		endpoint = 'notes/bubble-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
-			withBots: props.withBots,
-		};
-	}  else if (props.src === 'bubblemedia') {
-		endpoint = 'notes/bubble-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withFiles: true,
 			withBots: props.withBots,
 		};
 	} else if (props.src === 'global') {
