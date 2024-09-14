@@ -64,7 +64,7 @@ const rootEl = shallowRef<HTMLElement>();
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
 const queue = ref(0);
-const srcWhenNotSignin = ref<'local' | 'bubble' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
+const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
 const src = computed<TimelinePageSrc>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
@@ -213,8 +213,8 @@ function saveSrc(newSrc: TimelinePageSrc): void {
 	}
 
 	defaultStore.set('tl', out);
-	if (['local', 'bubble', 'global'].includes(newSrc)) {
-		srcWhenNotSignin.value = newSrc as 'local' | 'bubble' | 'global';
+	if (['local', 'global'].includes(newSrc)) {
+		srcWhenNotSignin.value = newSrc as 'local' | 'global';
 	}
 }
 
