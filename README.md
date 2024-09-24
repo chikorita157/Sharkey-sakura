@@ -12,11 +12,10 @@
 * Different defaults to make Sharkey more approachable for users who used Twitter/X.
 * Added link to the repo of the Sakura version of Sharkey.
 * Removed Channels (Deprecated on this softfork)
-* Bubble Timeline viewable to visitors
-* Add Media and Bubble Media timelines (Shows only posts with Media), idea taken from Misskey.io
 * Only index Public notes, not notes that are Home/Unlisted/Silent Public
 * Only search public notes from non suspended/silenced servers and users.
-* "Home" visiblity renamed to "Quiet Public" (matching Mastodon) and use the moon icon and Local/Defederated posts use the home icon
+* "Home" visibility renamed to "Quiet Public" (matching Mastodon) and use the moon icon and Local/Defederated posts use the home icon
+* Sort Lists and Antennas (cherrypicked from [here](https://github.com/aliceif/misskey/commit/9969413adbb506d2076a4b33eb64f10643c59c73) by aliceif)
 
 <div>
 
