@@ -243,10 +243,6 @@ export function getNoteMenu(props: {
 		os.success();
 	}
 
-	function openInNewTab(): void {
-		window.open(`${url}/notes/${appearNote.id}`, '_blank', 'noopener');
-	}
-
 	function togglePin(pin: boolean): void {
 		os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
 			noteId: appearNote.id,
@@ -333,11 +329,6 @@ export function getNoteMenu(props: {
 				text: i18n.ts.showOnRemote,
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
-				},
-				{
-					icon: 'ti ti-external-link',
-					text: i18n.ts.openInNewTab,
-					action: openInNewTab,
 				},
 			} : undefined,
 			...(isSupportShare() ? [{
