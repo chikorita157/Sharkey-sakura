@@ -589,6 +589,10 @@ export interface Locale extends ILocale {
      */
     "mute": string;
     /**
+     * Muted
+     */
+    "muted": string;
+    /**
      * ミュート解除
      */
     "unmute": string;
@@ -596,6 +600,10 @@ export interface Locale extends ILocale {
      * ブーストをミュート
      */
     "renoteMute": string;
+    /**
+     * Boosts muted
+     */
+    "renoteMuted": string;
     /**
      * ブーストのミュートを解除
      */
@@ -1069,6 +1077,18 @@ export interface Locale extends ILocale {
      */
     "blocked": string;
     /**
+     * This host is blocked implicitly because a base domain is blocked. To unblock this host, first unblock the base domain(s).
+     */
+    "blockedByBase": string;
+    /**
+     * This host is silenced implicitly because a base domain is silenced. To un-silence this host, first un-silence the base domain(s).
+     */
+    "silencedByBase": string;
+    /**
+     * This host's media is silenced implicitly because a base domain's media is silenced. To un-silence this host, first un-silence the base domain(s).
+     */
+    "mediaSilencedByBase": string;
+    /**
      * 配信停止
      */
     "suspended": string;
@@ -1180,6 +1200,10 @@ export interface Locale extends ILocale {
      * よろしいですか？
      */
     "areYouSure": string;
+    /**
+     * 「{x}」を開きますか？
+     */
+    "confirmRemoteUrl": ParameterizedString<"x">;
     /**
      * 保存しました
      */
@@ -3124,6 +3148,10 @@ export interface Locale extends ILocale {
      * 返信にサーバー情報を表示する
      */
     "showTickerOnReplies": string;
+    /**
+     * 猫の話し方を無効にする
+     */
+    "disableCatSpeak": string;
     /**
      * 検索MFMの検索エンジン
      */
@@ -5126,6 +5154,10 @@ export interface Locale extends ILocale {
      */
     "flip": string;
     /**
+     * アイコンの後ろに表示
+     */
+    "showBelowAvatar": string;
+    /**
      * アイコンのデコレーションを表示
      */
     "showAvatarDecorations": string;
@@ -5628,6 +5660,10 @@ export interface Locale extends ILocale {
              */
             "global": string;
             /**
+             * 管理者が選択した他の接続サーバーの投稿を見ることができます。
+             */
+            "bubble": string;
+            /**
              * それぞれのタイムラインは、画面上部でいつでも切り替えられます。
              */
             "description2": string;
@@ -5761,6 +5797,10 @@ export interface Locale extends ILocale {
          */
         "social": string;
         /**
+         * バブルタイムラインでは、管理者が選択した接続サーバーからの投稿を表示できます。
+         */
+        "bubble": string;
+        /**
          * グローバルタイムラインでは、接続している他のすべてのサーバーからの投稿を見られます。
          */
         "global": string;
@@ -5792,6 +5832,18 @@ export interface Locale extends ILocale {
          * 解像度は必ず{resolution}である必要があります。
          */
         "appIconResolutionMustBe": ParameterizedString<"resolution">;
+        /**
+         * ロゴURL
+         */
+        "sidebarLogoUrl": string;
+        /**
+         * 高精細、ダイナミック幅のシナリオで通常のアイコンの代わりに使用するロゴを指定します。
+         */
+        "sidebarLogoDescription": string;
+        /**
+         * 例：サイドバー、訪問者用、「情報」ページ
+         */
+        "sidebarLogoUsageExample": string;
         /**
          * manifest.jsonのオーバーライド
          */
@@ -9107,7 +9159,7 @@ export interface Locale extends ILocale {
          */
         "global": string;
         /**
-         * バッッブル
+         * バブル
          */
         "bubble": string;
     };
