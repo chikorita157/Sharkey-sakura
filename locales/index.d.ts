@@ -261,6 +261,18 @@ export interface Locale extends ILocale {
      */
     "copyProfileUrl": string;
     /**
+     * 外部サイトへのリンク警告 除外リスト
+     */
+    "trustedLinkUrlPatterns": string;
+    /**
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。ドメイン名だけ書くと後方一致になります。
+     */
+    "trustedLinkUrlPatternsDescription": string;
+    /**
+     * 開く
+     */
+    "open": string;
+    /**
      * ユーザーを検索
      */
     "searchUser": string;
@@ -368,6 +380,10 @@ export interface Locale extends ILocale {
      * フォロワー
      */
     "followers": string;
+    /**
+     * Mutuals
+     */
+    "mutuals": string;
     /**
      * フォローされています
      */
@@ -620,6 +636,10 @@ export interface Locale extends ILocale {
      * ユーザーのすべてのメディアをNSFWとしてマークする
      */
     "markAsNSFW": string;
+    /**
+     * Mark as NSFW
+     */
+    "markInstanceAsNSFW": string;
     /**
      * 凍結
      */
@@ -917,6 +937,10 @@ export interface Locale extends ILocale {
      */
     "mediaSilenceThisInstance": string;
     /**
+     * Reject reports from this instance
+     */
+    "rejectReports": string;
+    /**
      * 操作
      */
     "operations": string;
@@ -1200,10 +1224,6 @@ export interface Locale extends ILocale {
      * よろしいですか？
      */
     "areYouSure": string;
-    /**
-     * 「{x}」を開きますか？
-     */
-    "confirmRemoteUrl": ParameterizedString<"x">;
     /**
      * 保存しました
      */
@@ -2521,6 +2541,10 @@ export interface Locale extends ILocale {
      */
     "deleteAllFilesConfirm": string;
     /**
+     * キューに入れられたすべてのファイルの削除
+     */
+    "deleteAllFilesQueued": string;
+    /**
      * フォローを全解除
      */
     "removeAllFollowing": string;
@@ -2820,6 +2844,10 @@ export interface Locale extends ILocale {
      * {name}が何かを言いました
      */
     "userSaysSomething": ParameterizedString<"name">;
+    /**
+     * post is hidden by a filter
+     */
+    "postFiltered": string;
     /**
      * アクティブにする
      */
@@ -5357,6 +5385,18 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * 以下の関係をすべて断ち切る
+     */
+    "severAllFollowRelations": string;
+    /**
+     * すべての人間関係を壊す？これは不可逆です！これは{instanceName}の{followingCount}フォローと{followersCount}フォロワーの関係を壊す！
+     */
+    "severAllFollowRelationsConfirm": ParameterizedString<"instanceName" | "followingCount" | "followersCount">;
+    /**
+     * キューに入れられた{host}とのすべてのフォロー関係を切断する。
+     */
+    "severAllFollowRelationsQueued": ParameterizedString<"host">;
     "_delivery": {
         /**
          * 配信状態
@@ -9993,6 +10033,22 @@ export interface Locale extends ILocale {
          */
         "unsuspendRemoteInstance": string;
         /**
+         * Set remote instance as NSFW
+         */
+        "setRemoteInstanceNSFW": string;
+        /**
+         * Set remote instance as NSFW
+         */
+        "unsetRemoteInstanceNSFW": string;
+        /**
+         * Rejected reports from remote instance
+         */
+        "rejectRemoteInstanceReports": string;
+        /**
+         * Accepted reports from remote instance
+         */
+        "acceptRemoteInstanceReports": string;
+        /**
          * リモートサーバーのモデレーションノート更新
          */
         "updateRemoteInstanceNote": string;
@@ -10932,6 +10988,20 @@ export interface Locale extends ILocale {
          * ブラウザのUI
          */
         "native": string;
+    };
+    "_externalNavigationWarning": {
+        /**
+         * 外部サイトに移動します
+         */
+        "title": string;
+        /**
+         * {host}を離れて外部サイトに移動します
+         */
+        "description": ParameterizedString<"host">;
+        /**
+         * このデバイスで今後このドメインを信頼する
+         */
+        "trustThisDomain": string;
     };
 }
 declare const locales: {
