@@ -521,6 +521,10 @@ export interface Locale extends ILocale {
      */
     "pinnedNote": string;
     /**
+     * Pinned
+     */
+    "pinnedOnly": string;
+    /**
      * ピン留め
      */
     "pinned": string;
@@ -2568,6 +2572,14 @@ export interface Locale extends ILocale {
      * このアカウントは、サーバーの利用規約に違反したなどの理由により、凍結されています。詳細については管理者までお問い合わせください。新しいアカウントを作らないでください。
      */
     "yourAccountSuspendedDescription": string;
+    /**
+     * This is a system account
+     */
+    "systemAccountTitle": string;
+    /**
+     * This account is created and managed automatically by the system, and cannot be logged into.
+     */
+    "systemAccountDescription": string;
     /**
      * トークンが無効です
      */
@@ -5377,6 +5389,10 @@ export interface Locale extends ILocale {
      * センシティブなメディアです。表示しますか？
      */
     "sensitiveMediaRevealConfirm": string;
+    /**
+     * 外部URLを開く際に警告を表示する
+     */
+    "warnExternalUrl": string;
     /**
      * 作成したリスト
      */
