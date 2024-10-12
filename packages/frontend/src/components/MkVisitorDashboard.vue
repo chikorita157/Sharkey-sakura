@@ -33,7 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div :class="[$style.main, $style.panel]">
-		<p><b>Sakurajima</b> is your gateway to the Japanese media (Anime/Manga/Visual Novels/Video Games/etc) fandom and creator community on the Fediverse. You can connect with other fans and creators on the Fediverse. You can learn more about our services and more on <a href='https://joinsakurajima.org'>our official website</a>.</p>
+		<div :class="$style.mainAbout">
+			<h1 :class="$style.mainTitle">
+				About Sakurajima
+			</h2>
+			<p><b>Sakurajima</b> is your gateway to the Japanese media (Anime/Manga/Visual Novels/Video Games/etc) fandom and creator community on the Fediverse. You can connect with other fans and creators on the Fediverse. You can learn more about our services and more on <a href='https://joinsakurajima.org'>our official website</a>.</p>
+		</div>
 	</div>
 	<div v-if="stats" :class="$style.stats">
 		<div :class="[$style.statsItem, $style.panel]">
