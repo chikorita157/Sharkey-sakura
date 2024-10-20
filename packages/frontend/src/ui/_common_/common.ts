@@ -7,7 +7,7 @@ import { defineAsyncComponent } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 
@@ -41,7 +41,9 @@ function toolsMenuItems(): MenuItem[] {
 }
 
 export function openInstanceMenu(ev: MouseEvent) {
-	os.popupMenu([{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		text: instance.name ?? host,
 		type: 'label',
 	}, {
@@ -91,37 +93,58 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.inquiry,
 		icon: 'ph-question ph-bold ph-lg',
 		to: '/contact',
-	}, (instance.impressumUrl) ? {
-		type: 'a',
-		text: i18n.ts.impressum,
-		icon: 'ti ti-file-invoice',
-		href: instance.impressumUrl,
-		target: '_blank',
-	} : undefined, (instance.tosUrl) ? {
-		type: 'a',
-		text: i18n.ts.termsOfService,
-		icon: 'ti ti-notebook',
-		href: instance.tosUrl,
-		target: '_blank',
-	} : undefined, (instance.privacyPolicyUrl) ? {
-		type: 'a',
-		text: i18n.ts.privacyPolicy,
-		icon: 'ti ti-shield-lock',
-		href: instance.privacyPolicyUrl,
-		target: '_blank',
-	} : undefined, (instance.donationUrl) ? {
-		type: 'a',
-		text: i18n.ts.donation,
-		icon: 'ph-hand-coins ph-bold ph-lg',
-		href: instance.donationUrl,
-		target: '_blank',
-	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl && !instance.donationUrl) ? undefined : { type: 'divider' }, {
+	});
+
+	if (instance.impressumUrl) {
+		menuItems.push({
+			type: 'a',
+			text: i18n.ts.impressum,
+			icon: 'ti ti-file-invoice',
+			href: instance.impressumUrl,
+			target: '_blank',
+		});
+	}
+
+	if (instance.tosUrl) {
+		menuItems.push({
+			type: 'a',
+			text: i18n.ts.termsOfService,
+			icon: 'ti ti-notebook',
+			href: instance.tosUrl,
+			target: '_blank',
+		});
+	}
+
+	if (instance.privacyPolicyUrl) {
+		menuItems.push({
+			type: 'a',
+			text: i18n.ts.privacyPolicy,
+			icon: 'ti ti-shield-lock',
+			href: instance.privacyPolicyUrl,
+			target: '_blank',
+		});
+	}
+
+	if (instance.donationUrl) {
+		menuItems.push({
+			type: 'a',
+			text: i18n.ts.donation,
+			icon: 'ph-hand-coins ph-bold ph-lg',
+			href: instance.donationUrl,
+			target: '_blank',
+		});
+	}
+
+	if (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl && !instance.donationUrl) {
+		menuItems.push({ type: 'divider' });
+	}
+
+	menuItems.push({
 		type: 'a',
 		text: i18n.ts.document,
-		icon: 'ph-libghtbulb ph-bold ph-lg',
-		action: () => {
-			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
-		},
+		icon: 'ti ti-bulb',
+		href: 'https://misskey-hub.net/docs/for-users/',
+		target: '_blank',
 	},{
 		text: 'Misskey Guides',
 		icon: 'ph-question ph-bold ph-lg',
@@ -141,7 +164,9 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.aboutMisskey,
 		icon: 'sk-icons sk-shark sk-icons-lg',
 		to: '/about-sharkey',
-	}], ev.currentTarget ?? ev.target, {
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target, {
 		align: 'left',
 	});
 }
