@@ -186,6 +186,17 @@ redis:
 #  index: ''
 #  scope: global
 
+#   ┌───────────────────--────────┐
+#───┘ Elasticsearch configuration └─────────────────────────────
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  ssl: false
+#  user:
+#  pass:
+#  rejectUnauthorized: false
+#  index: sharkey
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 

@@ -391,6 +391,10 @@ export class SearchService {
 			})).filter(note => {
 				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
+				if (!me && note.user?.isSilenced) return false;
+				if (this.utilityService.isBlockedHost(meta.blockedHosts, note.userHost)) return false;
+				if (this.utilityService.isSilencedHost(meta.silencedHosts, note.userHost)) return false;
 				return true;
 			});
 
