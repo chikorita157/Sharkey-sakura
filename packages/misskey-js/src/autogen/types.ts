@@ -3939,7 +3939,7 @@ export type components = {
       /** @example 2018-03-12 */
       birthday: string | null;
       /** @example Steve */
-      ListenBrainz: string | null;
+      listenbrainz: string | null;
       /** @example ja-JP */
       lang: string | null;
       fields: {
@@ -22547,8 +22547,11 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
-          /** @default false */
-          mutualsOnly?: boolean;
+          /**
+           * @default following
+           * @enum {string}
+           */
+          list?: 'following' | 'followers' | 'mutuals';
           /** @default false */
           filesOnly?: boolean;
           /** @default false */
