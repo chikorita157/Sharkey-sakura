@@ -85,14 +85,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queryService.generateMutedUserQuery(query, me);
 			}
 
-			var [
+			let [
 				followings,
 			] = me ? await Promise.all([
 				this.cacheService.userFollowingsCache.fetch(me.id),
 			]) : [undefined];
 
 
-			const notes = await query.limit(ps.limit).getMany();
+			let notes = await query.limit(ps.limit).getMany();
 
 			notes = notes.filter(note => {
 				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
