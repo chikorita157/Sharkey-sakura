@@ -10,6 +10,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { CacheService } from '@/core/CacheService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -47,6 +49,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private cacheService: CacheService,
+		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
@@ -78,7 +82,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queryService.generateMutedUserQuery(query, me);
 			}
 
+			const [
+				followings,
+			] = me ? await Promise.all([
+				this.cacheService.userFollowingsCache.fetch(me.id),
+			]) : [undefined];
+
+
 			const notes = await query.limit(ps.limit).getMany();
+
+			notes = notes.filter(note => {
+				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
+				if (!me && note.user?.isSilenced) return false;
+				if (note.user?.isSuspended) return false;
+				if (note.userHost) {
+					if (!this.utilityService.isFederationAllowedHost(note.userHost)) return false;
+					if (this.utilityService.isSilencedHost(this.serverSettings.silencedHosts, note.userHost)) return false;
+				}
+				return true;
+			});
 
 			return await this.noteEntityService.packMany(notes, me);
 		});
