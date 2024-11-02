@@ -50,9 +50,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private cacheService: CacheService,
+		private metaService: MetaService,
 		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const metasvc = await this.metaService.fetch(true);
+
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => {
 					qb
@@ -95,10 +98,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
 				if (!me && note.user?.isSilenced) return false;
 				if (note.user?.isSuspended) return false;
-				if (note.userHost) {
-					if (!this.utilityService.isFederationAllowedHost(note.userHost)) return false;
-					if (this.utilityService.isSilencedHost(this.serverSettings.silencedHosts, note.userHost)) return false;
-				}
+				if (this.utilityService.isBlockedHost(metasvc.blockedHosts, note.userHost)) return false;
+				if (this.utilityService.isSilencedHost(metasvc.silencedHosts, note.userHost)) return false;
 				return true;
 			});
 
