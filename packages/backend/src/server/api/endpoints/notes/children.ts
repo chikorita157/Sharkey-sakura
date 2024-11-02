@@ -10,8 +10,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { CacheService } from '@/core/CacheService.js';
-import { UtilityService } from '@/core/UtilityService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -49,13 +47,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private cacheService: CacheService,
-		private metaService: MetaService,
-		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const metasvc = await this.metaService.fetch(true);
-
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => {
 					qb
@@ -85,23 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queryService.generateMutedUserQuery(query, me);
 			}
 
-			let [
-				followings,
-			] = me ? await Promise.all([
-				this.cacheService.userFollowingsCache.fetch(me.id),
-			]) : [undefined];
-
-
-			let notes = await query.limit(ps.limit).getMany();
-
-			notes = notes.filter(note => {
-				if (note.user?.isSilenced && me && followings && note.userId !== me.id && !followings[note.userId]) return false;
-				if (!me && note.user?.isSilenced) return false;
-				if (note.user?.isSuspended) return false;
-				if (this.utilityService.isBlockedHost(metasvc.blockedHosts, note.userHost)) return false;
-				if (this.utilityService.isSilencedHost(metasvc.silencedHosts, note.userHost)) return false;
-				return true;
-			});
+			const notes = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes, me);
 		});
