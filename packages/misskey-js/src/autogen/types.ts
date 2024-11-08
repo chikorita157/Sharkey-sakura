@@ -1645,7 +1645,7 @@ export type paths = {
      * federation/followers
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     post: operations['federation___followers'];
   };
@@ -1654,7 +1654,7 @@ export type paths = {
      * federation/following
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     post: operations['federation___following'];
   };
@@ -5142,6 +5142,8 @@ export type components = {
       recaptchaSiteKey: string | null;
       enableTurnstile: boolean;
       turnstileSiteKey: string | null;
+      enableFC: boolean;
+      fcSiteKey: string | null;
       enableAchievements: boolean | null;
       swPublickey: string | null;
       /** @default /assets/ai.png */
@@ -5153,6 +5155,11 @@ export type components = {
       iconUrl: string | null;
       sidebarLogoUrl: string | null;
       maxNoteTextLength: number;
+      maxRemoteNoteTextLength: number;
+      maxCwLength: number;
+      maxRemoteCwLength: number;
+      maxAltTextLength: number;
+      maxRemoteAltTextLength: number;
       ads: {
           /**
            * Format: id
@@ -5276,6 +5283,8 @@ export type operations = {
             recaptchaSiteKey: string | null;
             enableTurnstile: boolean;
             turnstileSiteKey: string | null;
+            enableFC: boolean;
+            fcSiteKey: string | null;
             swPublickey: string | null;
             /** @default /assets/ai.png */
             mascotImageUrl: string | null;
@@ -5304,6 +5313,7 @@ export type operations = {
             mcaptchaSecretKey: string | null;
             recaptchaSecretKey: string | null;
             turnstileSecretKey: string | null;
+            fcSecretKey: string | null;
             sensitiveMediaDetection: string;
             sensitiveMediaDetectionSensitivity: string;
             setSensitiveFlagAutomatically: boolean;
@@ -9886,6 +9896,9 @@ export type operations = {
           enableTurnstile?: boolean;
           turnstileSiteKey?: string | null;
           turnstileSecretKey?: string | null;
+          enableFC?: boolean;
+          fcSiteKey?: string | null;
+          fcSecretKey?: string | null;
           /** @enum {string} */
           sensitiveMediaDetection?: 'none' | 'all' | 'local' | 'remote';
           /** @enum {string} */
@@ -15550,7 +15563,7 @@ export type operations = {
    * federation/followers
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes* / **Permission**: *read:account*
    */
   federation___followers: {
     requestBody: {
@@ -15613,7 +15626,7 @@ export type operations = {
    * federation/following
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes* / **Permission**: *read:account*
    */
   federation___following: {
     requestBody: {
