@@ -442,7 +442,7 @@ export class NoteEditService implements OnApplicationShutdown {
 
 		if (user.host && !data.cw) {
 			await this.federatedInstanceService.fetch(user.host).then(async i => {
-				if (i.isNSFW) {
+				if (i.isNSFW && !this.noteCreateService.isPureRenote(data)) {
 					data.cw = 'Instance is marked as NSFW';
 				}
 			});

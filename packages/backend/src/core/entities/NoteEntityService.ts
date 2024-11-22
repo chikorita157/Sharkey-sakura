@@ -17,6 +17,7 @@ import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import type { OnModuleInit } from '@nestjs/common';
+import type { CacheService } from '../CacheService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
@@ -27,6 +28,7 @@ import type { Config } from '@/config.js';
 export class NoteEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private driveFileEntityService: DriveFileEntityService;
+	private cacheService: CacheService;
 	private customEmojiService: CustomEmojiService;
 	private reactionService: ReactionService;
 	private reactionsBufferingService: ReactionsBufferingService;
@@ -75,6 +77,7 @@ export class NoteEntityService implements OnModuleInit {
 	onModuleInit() {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
+		this.cacheService = this.moduleRef.get('CacheService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.reactionService = this.moduleRef.get('ReactionService');
 		this.reactionsBufferingService = this.moduleRef.get('ReactionsBufferingService');
@@ -142,6 +145,12 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
+		if (!hide && meId && packedNote.userId !== meId) {
+			const isBlocked = (await this.cacheService.userBlockedCache.fetch(meId)).has(packedNote.userId);
+
+			if (isBlocked) hide = true;
+		}
+
 		if (hide) {
 			packedNote.visibleUserIds = undefined;
 			packedNote.fileIds = [];
@@ -149,6 +158,12 @@ export class NoteEntityService implements OnModuleInit {
 			packedNote.text = null;
 			packedNote.poll = undefined;
 			packedNote.cw = null;
+			packedNote.repliesCount = 0;
+			packedNote.reactionAcceptance = null;
+			packedNote.reactionAndUserPairCache = undefined;
+			packedNote.reactionCount = 0;
+			packedNote.reactionEmojis = undefined;
+			packedNote.reactions = undefined;
 			packedNote.isHidden = true;
 		}
 	}
@@ -262,7 +277,8 @@ export class NoteEntityService implements OnModuleInit {
 				return true;
 			} else {
 				// フォロワーかどうか
-				const [following, user] = await Promise.all([
+				const [blocked, following, user] = await Promise.all([
+					this.cacheService.userBlockingCache.fetch(meId).then((ids) => ids.has(note.userId)),
 					this.followingsRepository.count({
 						where: {
 							followeeId: note.userId,
@@ -273,6 +289,8 @@ export class NoteEntityService implements OnModuleInit {
 					this.usersRepository.findOneByOrFail({ id: meId }),
 				]);
 
+				if (blocked) return false;
+
 				/* If we know the following, everyhting is fine.
 
 				But if we do not know the following, it might be that both the
@@ -282,6 +300,12 @@ export class NoteEntityService implements OnModuleInit {
 				*/
 				return following > 0 || (note.userHost != null && user.host != null);
 			}
+		}
+
+		if (meId != null) {
+			const isBlocked = (await this.cacheService.userBlockedCache.fetch(meId)).has(note.userId);
+
+			if (isBlocked) return false;
 		}
 
 		return true;
