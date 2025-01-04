@@ -11,14 +11,14 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
-import type { IObject } from './type.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { assertActivityMatchesUrls } from '@/core/activitypub/misc/check-against-url.js';
-import { UtilityService } from "@/core/UtilityService.js";
+import type { IObject } from './type.js';
 
 type Request = {
 	url: string;
@@ -243,7 +243,7 @@ export class ApRequestService {
 				if (alternate) {
 					const href = alternate.getAttribute('href');
 					if (href) {
-						if (this.utilityService.punyHost(url) === this.utilityService.punyHost(href)) {
+						if (this.utilityService.punyHostPSLDomain(url) === this.utilityService.punyHostPSLDomain(href)) {
 							return await this.signedGet(href, user, false);
 						}
 					}

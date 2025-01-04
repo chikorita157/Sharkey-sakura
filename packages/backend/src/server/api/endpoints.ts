@@ -5,6 +5,7 @@
 
 import { permissions } from 'misskey-js';
 import type { KeyOf, Schema } from '@/misc/json-schema.js';
+import type { RateLimit } from '@/misc/rate-limit-utils.js';
 
 import * as ep___admin_abuseReport_notificationRecipient_list
 	from '@/server/api/endpoints/admin/abuse-report/notification-recipient/list.js';
@@ -74,6 +75,8 @@ import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
 import * as ep___admin_relays_remove from './endpoints/admin/relays/remove.js';
 import * as ep___admin_resetPassword from './endpoints/admin/reset-password.js';
 import * as ep___admin_resolveAbuseUserReport from './endpoints/admin/resolve-abuse-user-report.js';
+import * as ep___admin_forwardAbuseUserReport from './endpoints/admin/forward-abuse-user-report.js';
+import * as ep___admin_updateAbuseUserReport from './endpoints/admin/update-abuse-user-report.js';
 import * as ep___admin_sendEmail from './endpoints/admin/send-email.js';
 import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderation-logs.js';
@@ -315,6 +318,9 @@ import * as ep___notes_reactions_delete from './endpoints/notes/reactions/delete
 import * as ep___notes_like from './endpoints/notes/like.js';
 import * as ep___notes_renotes from './endpoints/notes/renotes.js';
 import * as ep___notes_replies from './endpoints/notes/replies.js';
+import * as ep___notes_schedule_create from './endpoints/notes/schedule/create.js';
+import * as ep___notes_schedule_delete from './endpoints/notes/schedule/delete.js';
+import * as ep___notes_schedule_list from './endpoints/notes/schedule/list.js';
 import * as ep___notes_searchByTag from './endpoints/notes/search-by-tag.js';
 import * as ep___notes_search from './endpoints/notes/search.js';
 import * as ep___notes_show from './endpoints/notes/show.js';
@@ -474,6 +480,8 @@ const eps = [
 	['admin/relays/remove', ep___admin_relays_remove],
 	['admin/reset-password', ep___admin_resetPassword],
 	['admin/resolve-abuse-user-report', ep___admin_resolveAbuseUserReport],
+	['admin/forward-abuse-user-report', ep___admin_forwardAbuseUserReport],
+	['admin/update-abuse-user-report', ep___admin_updateAbuseUserReport],
 	['admin/send-email', ep___admin_sendEmail],
 	['admin/server-info', ep___admin_serverInfo],
 	['admin/show-moderation-logs', ep___admin_showModerationLogs],
@@ -715,6 +723,9 @@ const eps = [
 	['notes/like', ep___notes_like],
 	['notes/renotes', ep___notes_renotes],
 	['notes/replies', ep___notes_replies],
+	['notes/schedule/create', ep___notes_schedule_create],
+	['notes/schedule/delete', ep___notes_schedule_delete],
+	['notes/schedule/list', ep___notes_schedule_list],
 	['notes/search-by-tag', ep___notes_searchByTag],
 	['notes/search', ep___notes_search],
 	['notes/show', ep___notes_show],
@@ -855,30 +866,7 @@ interface IEndpointMetaBase {
 	 * エンドポイントのリミテーションに関するやつ
 	 * 省略した場合はリミテーションは無いものとして解釈されます。
 	 */
-	readonly limit?: {
-
-		/**
-		 * 複数のエンドポイントでリミットを共有したい場合に指定するキー
-		 */
-		readonly key?: string;
-
-		/**
-		 * リミットを適用する期間(ms)
-		 * このプロパティを設定する場合、max プロパティも設定する必要があります。
-		 */
-		readonly duration?: number;
-
-		/**
-		 * durationで指定した期間内にいくつまでリクエストできるのか
-		 * このプロパティを設定する場合、duration プロパティも設定する必要があります。
-		 */
-		readonly max?: number;
-
-		/**
-		 * 最低でもどれくらいの間隔を開けてリクエストしなければならないか(ms)
-		 */
-		readonly minInterval?: number;
-	};
+	readonly limit?: Readonly<RateLimit>;
 
 	/**
 	 * ファイルの添付を必要とするか否か

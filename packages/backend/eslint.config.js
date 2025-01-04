@@ -12,7 +12,7 @@ export default [
 		languageOptions: {
 			parserOptions: {
 				parser: tsParser,
-				project: ['./tsconfig.json', './test/tsconfig.json'],
+				project: ['./tsconfig.json', './test/tsconfig.json', './test-federation/tsconfig.json'],
 				sourceType: 'module',
 				tsconfigRootDir: import.meta.dirname,
 			},
@@ -41,6 +41,13 @@ export default [
 			}, {
 				name: '__filename',
 				message: 'Not in ESModule. Use `import.meta.url` instead.',
+			}],
+			// https://typescript-eslint.io/rules/prefer-nullish-coalescing/
+			'@typescript-eslint/prefer-nullish-coalescing': ['warn', {
+				ignorePrimitives: {
+					// Without this, the rule breaks for nullable booleans
+					boolean: true,
+				},
 			}],
 		},
 	},

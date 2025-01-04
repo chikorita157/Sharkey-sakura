@@ -21,7 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-for="media in mediaList.filter(media => previewable(media))">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
 				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
-				<XModPlayer v-else-if="isModule(media)" :key="media.id" :module="media"/>
+				<XModPlayer v-else-if="isModule(media)" :key="`module:${media.id}`" :class="$style.media" :module="media"/>
+				<XFlashPlayer v-else-if="isFlash(media)" :key="`flash:${media.id}`" :class="$style.media" :flashFile="media"/>
 			</template>
 		</div>
 	</div>
@@ -38,8 +39,9 @@ import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import XModPlayer from '@/components/SkModPlayer.vue';
+import XFlashPlayer from '@/components/SkFlashPlayer.vue';
 import * as os from '@/os.js';
-import { FILE_TYPE_BROWSERSAFE, FILE_EXT_TRACKER_MODULES, FILE_TYPE_TRACKER_MODULES } from '@@/js/const.js';
+import { FILE_TYPE_BROWSERSAFE, FILE_EXT_TRACKER_MODULES, FILE_TYPE_TRACKER_MODULES, FILE_TYPE_FLASH_CONTENT, FILE_EXT_FLASH_CONTENT } from '@@/js/const.js';
 import { defaultStore } from '@/store.js';
 import { focusParent } from '@/scripts/focus.js';
 
@@ -95,6 +97,12 @@ async function calcAspectRatio() {
 
 const isModule = (file: Misskey.entities.DriveFile): boolean => {
 	return FILE_TYPE_TRACKER_MODULES.includes(file.type) || FILE_EXT_TRACKER_MODULES.some((ext) => {
+		return (file.name.toLowerCase().endsWith('.' + ext) || file.name.toLowerCase().endsWith('.' + ext + '.unknown'));
+	});
+};
+
+const isFlash = (file: Misskey.entities.DriveFile): boolean => {
+	return FILE_TYPE_FLASH_CONTENT.includes(file.type) || FILE_EXT_FLASH_CONTENT.some((ext) => {
 		return (file.name.toLowerCase().endsWith('.' + ext) || file.name.toLowerCase().endsWith('.' + ext + '.unknown'));
 	});
 };
@@ -187,6 +195,12 @@ onMounted(() => {
 
 					textBox.textContent = pswp.currSlide?.data.comment;
 				});
+
+				// `passive: true` is for Safari compatibility, apparently
+				const stopEvent = name => textBox.addEventListener(name, event => event.stopPropagation(), { passive: true });
+				stopEvent('wheel');
+				stopEvent('pointerdown');
+				stopEvent('pointercancel');
 			},
 		});
 	});
@@ -224,6 +238,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	if (isModule(file)) return true;
+	if (isFlash(file)) return true;
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
 
@@ -324,19 +339,19 @@ defineExpose({
 
 .media {
 	overflow: hidden; // clipにするとバグる
-	border-radius: var(--radius-sm);
+	border-radius: var(--MI-radius-sm);
 }
 
 :global(.pswp) {
 	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
-	--pswp-bg: var(--modalBg) !important;
+	--pswp-bg: var(--MI_THEME-modalBg) !important;
 }
 </style>
 
 <style lang="scss">
 .pswp__bg {
-	background: var(--modalBg);
-	backdrop-filter: var(--modalBgFilter);
+	background: var(--MI_THEME-modalBg);
+	backdrop-filter: var(--MI-modalBgFilter);
 }
 
 .pswp__alt-text-container {
@@ -354,14 +369,14 @@ defineExpose({
 }
 
 .pswp__alt-text {
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	margin: 0 auto;
 	text-align: center;
-	padding: var(--margin);
-	border-radius: var(--radius);
+	padding: var(--MI-margin);
+	border-radius: var(--MI-radius);
 	max-height: 8em;
 	overflow-y: auto;
-	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
+	text-shadow: var(--MI_THEME-bg) 0 0 10px, var(--MI_THEME-bg) 0 0 3px, var(--MI_THEME-bg) 0 0 3px;
 	white-space: pre-line;
 }
 </style>

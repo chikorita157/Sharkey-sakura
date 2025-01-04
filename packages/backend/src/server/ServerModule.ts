@@ -6,6 +6,7 @@
 import { Module } from '@nestjs/common';
 import { EndpointsModule } from '@/server/api/EndpointsModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
+import { SkRateLimiterService } from '@/server/api/SkRateLimiterService.js';
 import { ApiCallService } from './api/ApiCallService.js';
 import { FileServerService } from './FileServerService.js';
 import { HealthServerService } from './HealthServerService.js';
@@ -73,6 +74,8 @@ import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.j
 		ApiLoggerService,
 		ApiServerService,
 		AuthenticateService,
+		SkRateLimiterService,
+		// No longer used, but kept for backwards compatibility
 		RateLimiterService,
 		SigninApiService,
 		SigninWithPasskeyApiService,

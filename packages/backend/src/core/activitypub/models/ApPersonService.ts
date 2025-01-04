@@ -8,6 +8,7 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { AbortError } from 'node-fetch';
+import { UnrecoverableError } from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -137,29 +138,30 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	private validateActor(x: IObject, uri: string): IActor {
-		const expectHost = this.utilityService.punyHost(uri);
+		const expectHost = this.utilityService.punyHostPSLDomain(uri);
 
 		if (!isActor(x)) {
-			throw new Error(`invalid Actor type '${x.type}'`);
+			throw new UnrecoverableError(`invalid Actor type '${x.type}' in ${uri}`);
 		}
 
 		if (!(typeof x.id === 'string' && x.id.length > 0)) {
-			throw new Error('invalid Actor: wrong id');
+			throw new UnrecoverableError(`invalid Actor ${uri} - wrong id type`);
 		}
 
 		if (!(typeof x.inbox === 'string' && x.inbox.length > 0)) {
-			throw new Error('invalid Actor: wrong inbox');
+			throw new UnrecoverableError(`invalid Actor ${uri} - wrong inbox type`);
 		}
 
-		if (this.utilityService.punyHost(x.inbox) !== expectHost) {
-			throw new Error('invalid Actor: inbox has different host');
+		const inboxHost = this.utilityService.punyHostPSLDomain(x.inbox);
+		if (inboxHost !== expectHost) {
+			throw new UnrecoverableError(`invalid Actor ${uri} - wrong inbox ${inboxHost}`);
 		}
 
 		const sharedInboxObject = x.sharedInbox ?? (x.endpoints ? x.endpoints.sharedInbox : undefined);
 		if (sharedInboxObject != null) {
 			const sharedInbox = getApId(sharedInboxObject);
-			if (!(typeof sharedInbox === 'string' && sharedInbox.length > 0 && this.utilityService.punyHost(sharedInbox) === expectHost)) {
-				throw new Error('invalid Actor: wrong shared inbox');
+			if (!(typeof sharedInbox === 'string' && sharedInbox.length > 0 && this.utilityService.punyHostPSLDomain(sharedInbox) === expectHost)) {
+				throw new UnrecoverableError(`invalid Actor ${uri} - wrong shared inbox ${sharedInbox}`);
 			}
 		}
 
@@ -168,17 +170,17 @@ export class ApPersonService implements OnModuleInit {
 			if (xCollection != null) {
 				const collectionUri = getApId(xCollection);
 				if (typeof collectionUri === 'string' && collectionUri.length > 0) {
-					if (this.utilityService.punyHost(collectionUri) !== expectHost) {
-						throw new Error(`invalid Actor: ${collection} has different host`);
+					if (this.utilityService.punyHostPSLDomain(collectionUri) !== expectHost) {
+						throw new UnrecoverableError(`invalid Actor ${uri} - wrong ${collection} ${collectionUri}`);
 					}
 				} else if (collectionUri != null) {
-					throw new Error(`invalid Actor: wrong ${collection}`);
+					throw new UnrecoverableError(`invalid Actor ${uri}: wrong ${collection} type`);
 				}
 			}
 		}
 
 		if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
-			throw new Error('invalid Actor: wrong username');
+			throw new UnrecoverableError(`invalid Actor ${uri} - wrong username`);
 		}
 
 		// These fields are only informational, and some AP software allows these
@@ -186,7 +188,7 @@ export class ApPersonService implements OnModuleInit {
 		// we can at least see these users and their activities.
 		if (x.name) {
 			if (!(typeof x.name === 'string' && x.name.length > 0)) {
-				throw new Error('invalid Actor: wrong name');
+				throw new UnrecoverableError(`invalid Actor ${uri} - wrong name`);
 			}
 			x.name = truncate(x.name, nameLength);
 		} else if (x.name === '') {
@@ -195,24 +197,24 @@ export class ApPersonService implements OnModuleInit {
 		}
 		if (x.summary) {
 			if (!(typeof x.summary === 'string' && x.summary.length > 0)) {
-				throw new Error('invalid Actor: wrong summary');
+				throw new UnrecoverableError(`invalid Actor ${uri} - wrong summary`);
 			}
 			x.summary = truncate(x.summary, summaryLength);
 		}
 
-		const idHost = this.utilityService.punyHost(x.id);
+		const idHost = this.utilityService.punyHostPSLDomain(x.id);
 		if (idHost !== expectHost) {
-			throw new Error('invalid Actor: id has different host');
+			throw new UnrecoverableError(`invalid Actor ${uri} - wrong id ${x.id}`);
 		}
 
 		if (x.publicKey) {
 			if (typeof x.publicKey.id !== 'string') {
-				throw new Error('invalid Actor: publicKey.id is not a string');
+				throw new UnrecoverableError(`invalid Actor ${uri} - wrong publicKey.id type`);
 			}
 
-			const publicKeyIdHost = this.utilityService.punyHost(x.publicKey.id);
+			const publicKeyIdHost = this.utilityService.punyHostPSLDomain(x.publicKey.id);
 			if (publicKeyIdHost !== expectHost) {
-				throw new Error('invalid Actor: publicKey.id has different host');
+				throw new UnrecoverableError(`invalid Actor ${uri} - wrong publicKey.id ${x.publicKey.id}`);
 			}
 		}
 
@@ -253,6 +255,12 @@ export class ApPersonService implements OnModuleInit {
 		if (user == null) throw new Error('failed to create user: user is null');
 
 		const [avatar, banner, background] = await Promise.all([icon, image, bgimg].map(img => {
+			// icon and image may be arrays
+			// see https://www.w3.org/TR/activitystreams-vocabulary/#dfn-icon
+			if (Array.isArray(img)) {
+				img = img.find(item => item && item.url) ?? null;
+			}
+
 			// if we have an explicitly missing image, return an
 			// explicitly-null set of values
 			if ((img == null) || (typeof img === 'object' && img.url == null)) {
@@ -298,18 +306,18 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	public async createPerson(uri: string, resolver?: Resolver): Promise<MiRemoteUser> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
+		if (typeof uri !== 'string') throw new UnrecoverableError(`uri is not string: ${uri}`);
 
 		const host = this.utilityService.punyHost(uri);
 		if (host === this.utilityService.toPuny(this.config.host)) {
-			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
+			throw new StatusError(`cannot resolve local user: ${uri}`, 400, 'cannot resolve local user');
 		}
 
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
-		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
+		if (object.id == null) throw new UnrecoverableError(`null object.id in ${uri}`);
 
 		const person = this.validateActor(object, uri);
 
@@ -341,16 +349,16 @@ export class ApPersonService implements OnModuleInit {
 		const url = getOneApHrefNullable(person.url);
 
 		if (person.id == null) {
-			throw new Error('Refusing to create person without id');
+			throw new UnrecoverableError(`Refusing to create person without id: ${uri}`);
 		}
 
 		if (url != null) {
 			if (!checkHttps(url)) {
-				throw new Error('unexpected schema of person url: ' + url);
+				throw new UnrecoverableError(`unexpected schema of person url ${url} in ${uri}`);
 			}
 
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {
-				throw new Error(`person url <> uri host mismatch: ${url} <> ${person.id}`);
+			if (this.utilityService.punyHostPSLDomain(url) !== this.utilityService.punyHostPSLDomain(person.id)) {
+				throw new UnrecoverableError(`person url <> uri host mismatch: ${url} <> ${person.id} in ${uri}`);
 			}
 		}
 
@@ -383,17 +391,20 @@ export class ApPersonService implements OnModuleInit {
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
 					noindex: (person as any).noindex ?? false,
+					enableRss: person.enableRss === true,
 					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
 					alsoKnownAs: person.alsoKnownAs,
+					// We use "!== false" to handle incorrect types, missing / null values, and "default to true" logic.
+					hideOnlineStatus: person.hideOnlineStatus !== false,
 					isExplorable: person.discoverable,
 					username: person.preferredUsername,
 					approved: true,
 					usernameLower: person.preferredUsername?.toLowerCase(),
 					host,
 					inbox: person.inbox,
-					sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
+					sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null,
 					notesCount: outboxcollection?.totalItems ?? 0,
 					followersCount: followerscollection?.totalItems ?? 0,
 					followingCount: followingcollection?.totalItems ?? 0,
@@ -404,6 +415,9 @@ export class ApPersonService implements OnModuleInit {
 					isBot,
 					isCat: (person as any).isCat === true,
 					speakAsCat: (person as any).speakAsCat != null ? (person as any).speakAsCat === true : (person as any).isCat === true,
+					requireSigninToViewContents: (person as any).requireSigninToViewContents === true,
+					makeNotesFollowersOnlyBefore: (person as any).makeNotesFollowersOnlyBefore ?? null,
+					makeNotesHiddenBefore: (person as any).makeNotesHiddenBefore ?? null,
 					emojis,
 				})) as MiRemoteUser;
 
@@ -442,7 +456,7 @@ export class ApPersonService implements OnModuleInit {
 			if (isDuplicateKeyValueError(e)) {
 				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 				const u = await this.usersRepository.findOneBy({ uri: person.id });
-				if (u == null) throw new Error('already registered');
+				if (u == null) throw new UnrecoverableError(`already registered a user with conflicting data: ${uri}`);
 
 				user = u as MiRemoteUser;
 			} else {
@@ -451,19 +465,21 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
-		if (user == null) throw new Error('failed to create user: user is null');
+		if (user == null) throw new Error(`failed to create user - user is null: ${uri}`);
 
 		// Register to the cache
 		this.cacheService.uriPersonCache.set(user.uri, user);
 
 		// Register host
-		this.federatedInstanceService.fetch(host).then(i => {
-			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
-			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-			if (this.meta.enableChartsForFederatedInstances) {
-				this.instanceChart.newUser(i.host);
-			}
-		});
+		if (this.meta.enableStatsForFederatedInstances) {
+			this.federatedInstanceService.fetchOrRegister(host).then(i => {
+				this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
+				if (this.meta.enableChartsForFederatedInstances) {
+					this.instanceChart.newUser(i.host);
+				}
+				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+			});
+		}
 
 		this.usersChart.update(user, true);
 
@@ -500,7 +516,7 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | void> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
+		if (typeof uri !== 'string') throw new UnrecoverableError('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
 		if (this.utilityService.isUriLocal(uri)) return;
@@ -553,23 +569,23 @@ export class ApPersonService implements OnModuleInit {
 		const url = getOneApHrefNullable(person.url);
 
 		if (person.id == null) {
-			throw new Error('Refusing to update person without id');
+			throw new UnrecoverableError(`Refusing to update person without id: ${uri}`);
 		}
 
 		if (url != null) {
 			if (!checkHttps(url)) {
-				throw new Error('unexpected schema of person url: ' + url);
+				throw new UnrecoverableError(`unexpected schema of person url ${url} in ${uri}`);
 			}
 
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {
-				throw new Error(`person url <> uri host mismatch: ${url} <> ${person.id}`);
+			if (this.utilityService.punyHostPSLDomain(url) !== this.utilityService.punyHostPSLDomain(person.id)) {
+				throw new UnrecoverableError(`person url <> uri host mismatch: ${url} <> ${person.id} in ${uri}`);
 			}
 		}
 
 		const updates = {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
+			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null,
 			followersUri: person.followers ? getApId(person.followers) : undefined,
 			featured: person.featured,
 			emojis: emojiNames,
@@ -580,9 +596,12 @@ export class ApPersonService implements OnModuleInit {
 			isCat: (person as any).isCat === true,
 			speakAsCat: (person as any).speakAsCat != null ? (person as any).speakAsCat === true : (person as any).isCat === true,
 			noindex: (person as any).noindex ?? false,
+			enableRss: person.enableRss === true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
+			// We use "!== false" to handle incorrect types, missing / null values, and "default to true" logic.
+			hideOnlineStatus: person.hideOnlineStatus !== false,
 			isExplorable: person.discoverable,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image, person.backgroundUrl).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'speakAsCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
@@ -645,7 +664,7 @@ export class ApPersonService implements OnModuleInit {
 		// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 		await this.followingsRepository.update(
 			{ followerId: exist.id },
-			{ followerSharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox },
+			{ followerSharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null },
 		);
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
@@ -673,7 +692,7 @@ export class ApPersonService implements OnModuleInit {
 				});
 		}
 
-		return 'skip';
+		return 'skip: too soon to migrate accounts';
 	}
 
 	/**
@@ -732,7 +751,7 @@ export class ApPersonService implements OnModuleInit {
 		});
 		if (!collection) return;
 
-		if (!isCollectionOrOrderedCollection(collection)) throw new Error('Object is not Collection or OrderedCollection');
+		if (!isCollectionOrOrderedCollection(collection)) throw new UnrecoverableError(`featured ${user.featured} is not Collection or OrderedCollection in ${user.uri}`);
 
 		// Resolve to Object(may be Note) arrays
 		const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;

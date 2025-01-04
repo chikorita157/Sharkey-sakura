@@ -16,6 +16,7 @@ import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { isPackedPureRenote } from '@/misc/is-renote.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CacheService } from '../CacheService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -23,6 +24,30 @@ import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { Config } from '@/config.js';
+
+// is-renote.tsとよしなにリンク
+function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
+	return (
+		note.renote != null &&
+		note.reply == null &&
+		note.text == null &&
+		note.cw == null &&
+		(note.fileIds == null || note.fileIds.length === 0) &&
+		!note.hasPoll
+	);
+}
+
+function getAppearNoteIds(notes: MiNote[]): Set<string> {
+	const appearNoteIds = new Set<string>();
+	for (const note of notes) {
+		if (isPureRenote(note)) {
+			appearNoteIds.add(note.renoteId);
+		} else {
+			appearNoteIds.add(note.id);
+		}
+	}
+	return appearNoteIds;
+}
 
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
@@ -85,54 +110,77 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null) {
+	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null): Promise<void> {
+		// FIXME: このvisibility変更処理が当関数にあるのは若干不自然かもしれない(関数名を treatVisibility とかに変える手もある)
+		if (packedNote.visibility === 'public' || packedNote.visibility === 'home') {
+			const followersOnlyBefore = packedNote.user.makeNotesFollowersOnlyBefore;
+			if ((followersOnlyBefore != null)
+				&& (
+					(followersOnlyBefore <= 0 && (Date.now() - new Date(packedNote.createdAt).getTime() > 0 - (followersOnlyBefore * 1000)))
+					|| (followersOnlyBefore > 0 && (new Date(packedNote.createdAt).getTime() < followersOnlyBefore * 1000))
+				)
+			) {
+				packedNote.visibility = 'followers';
+			}
+		}
+
+		if (meId === packedNote.userId) return;
+
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
-		// visibility が specified かつ自分が指定されていなかったら非表示
-		if (packedNote.visibility === 'specified') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else {
-				// 指定されているかどうか
-				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
+		if (packedNote.user.requireSigninToViewContents && meId == null) {
+			hide = true;
+		}
 
-				if (specified) {
+		if (!hide) {
+			const hiddenBefore = packedNote.user.makeNotesHiddenBefore;
+			if ((hiddenBefore != null)
+				&& (
+					(hiddenBefore <= 0 && (Date.now() - new Date(packedNote.createdAt).getTime() > 0 - (hiddenBefore * 1000)))
+					|| (hiddenBefore > 0 && (new Date(packedNote.createdAt).getTime() < hiddenBefore * 1000))
+				)
+			) {
+				hide = true;
+			}
+		}
+
+		// visibility が specified かつ自分が指定されていなかったら非表示
+		if (!hide) {
+			if (packedNote.visibility === 'specified') {
+				if (meId == null) {
+					hide = true;
+				} else if (meId === packedNote.userId) {
 					hide = false;
 				} else {
-					hide = true;
+					// 指定されているかどうか
+					const specified = packedNote.visibleUserIds!.some(id => meId === id);
+
+					if (!specified) {
+						hide = true;
+					}
 				}
 			}
 		}
 
 		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
-		if (packedNote.visibility === 'followers') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
-				// 自分の投稿に対するリプライ
-				hide = false;
-			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-				// 自分へのメンション
-				hide = false;
-			} else if (packedNote.renote && (meId === packedNote.renote.userId)) {
-				hide = false;
-			} else {
-				if (packedNote.renote) {
-					const isFollowing = await this.followingsRepository.exists({
-						where: {
-							followeeId: packedNote.renote.userId,
-							followerId: meId,
-						},
-					});
-
-					hide = !isFollowing;
+		if (!hide) {
+			if (packedNote.visibility === 'followers') {
+				if (meId == null) {
+					hide = true;
+				} else if (meId === packedNote.userId) {
+					hide = false;
+				} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
+					// 自分の投稿に対するリプライ
+					hide = false;
+				} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
+					// 自分へのメンション
+					hide = false;
+				} else if (packedNote.renote && (meId === packedNote.renote.userId)) {
+					hide = false;
 				} else {
 					// フォロワーかどうか
+					// TODO: 当関数呼び出しごとにクエリが走るのは重そうだからなんとかする
 					const isFollowing = await this.followingsRepository.exists({
 						where: {
 							followeeId: packedNote.userId,
@@ -143,6 +191,14 @@ export class NoteEntityService implements OnModuleInit {
 					hide = !isFollowing;
 				}
 			}
+		}
+
+		// If this is a pure renote (boost), then we should *also* check the boosted note's visibility.
+		// Otherwise we can have empty notes on the timeline, which is not good.
+		// Notes are packed in depth-first order, so we can safely grab the "isHidden" property to avoid duplicated checks.
+		// This is pulled out to ensure that we check both the renote *and* the boosted note.
+		if (packedNote.renote?.isHidden && isPackedPureRenote(packedNote)) {
+			hide = true;
 		}
 
 		if (!hide && meId && packedNote.userId !== meId) {
@@ -162,9 +218,10 @@ export class NoteEntityService implements OnModuleInit {
 			packedNote.reactionAcceptance = null;
 			packedNote.reactionAndUserPairCache = undefined;
 			packedNote.reactionCount = 0;
-			packedNote.reactionEmojis = undefined;
-			packedNote.reactions = undefined;
+			packedNote.reactionEmojis = {};
+			packedNote.reactions = {};
 			packedNote.isHidden = true;
+			// TODO: hiddenReason みたいなのを提供しても良さそう
 		}
 	}
 
@@ -259,7 +316,7 @@ export class NoteEntityService implements OnModuleInit {
 				return true;
 			} else {
 				// 指定されているかどうか
-				return note.visibleUserIds.some((id: any) => meId === id);
+				return note.visibleUserIds.some(id => meId === id);
 			}
 		}
 
@@ -461,7 +518,7 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : null;
+		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany([...getAppearNoteIds(notes)]) : null;
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();
@@ -472,7 +529,7 @@ export class NoteEntityService implements OnModuleInit {
 			const oldId = this.idService.gen(Date.now() - 2000);
 
 			for (const note of notes) {
-				if (note.renote && (note.text == null && note.fileIds.length === 0)) { // pure renote
+				if (isPureRenote(note)) {
 					const reactionsCount = Object.values(this.reactionsBufferingService.mergeReactions(note.renote.reactions, bufferedReactions?.get(note.renote.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
 					if (reactionsCount === 0) {
 						myReactionsMap.set(note.renote.id, null);

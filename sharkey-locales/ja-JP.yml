@@ -142,6 +142,15 @@ sensitiveMediaRevealConfirm: "センシティブなメディアです。表示�
 severAllFollowRelations: "以下の関係をすべて断ち切る"
 severAllFollowRelationsConfirm: "すべての人間関係を壊す？これは不可逆です！これは{instanceName}の{followingCount}フォローと{followersCount}フォロワーの関係を壊す！"
 severAllFollowRelationsQueued: "キューに入れられた{host}とのすべてのフォロー関係を切断する。"
+_flash:
+  contentHidden: "Flashコンテンツ非表示"
+  poweredByRuffle: "Powered by Ruffle." # Doesn't need a translation, apparently.
+  arbitraryCodeExecutionWarning: "任意コード実行にご注意！"
+  failedToLoad: "Flashコンテンツ読込に失敗"
+  isLoading: "Flashコンテンツ読込中"
+  loadingRufflePlayer: "Ruffleプレイヤー読込中"
+  loadingFlashFile: "Flashファイル読込中"
+  cspError: "raw.esm.shにアクセスできませんでした。このサーバーのコンテンツセキュリティポリシー(CSP) が廃止されている可能性があり、サーバー管理者に連絡してください。"
 _delivery:
   stop: "配信停止"
   resume: "配信再開"
@@ -201,6 +210,7 @@ _role:
     btlAvailable: "バブルタイムラインの閲覧"
     canImportNotes: "ノートのインポートが可能"
     canUpdateBioMedia: "アイコンとバナーの更新を許可"
+    scheduleNoteMax: "予約投稿の最大数"
   _condition:
     isLocked: "鍵アカウントユーザー"
     isExplorable: "「アカウントを見つけやすくする」が有効なユーザー"
@@ -375,3 +385,8 @@ _externalNavigationWarning:
   title: "外部サイトに移動します"
   description: "{host}を離れて外部サイトに移動します"
   trustThisDomain: "このデバイスで今後このドメインを信頼する"
+schedulePost: "予約投稿"
+schedulePostList: "予約投稿一覧"
+_permissions:
+  "read:notes-schedule": "予約投稿を見る"
+  "write:notes-schedule": "予約投稿を作成・削除する"

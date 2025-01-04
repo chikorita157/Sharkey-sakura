@@ -7,6 +7,7 @@ import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import * as mfm from '@transfem-org/sfm-js';
+import { UnrecoverableError } from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
@@ -30,6 +31,7 @@ import { IdService } from '@/core/IdService.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXT } from './misc/contexts.js';
+import { getApId } from './type.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -106,7 +108,7 @@ export class ApRendererService {
 			to = [`${attributedTo}/followers`];
 			cc = [];
 		} else {
-			throw new Error('renderAnnounce: cannot render non-public note');
+			throw new UnrecoverableError(`renderAnnounce: cannot render non-public note: ${getApId(object)}`);
 		}
 
 		return {
@@ -469,6 +471,7 @@ export class ApRendererService {
 		};
 	}
 
+	// if you change this, also change `server/api/endpoints/i/update.ts`
 	@bindThis
 	public async renderPerson(user: MiLocalUser) {
 		const id = this.userEntityService.genLocalUserUri(user.id);
@@ -517,6 +520,9 @@ export class ApRendererService {
 			summary: profile.description ? this.mfmService.toHtml(mfm.parse(profile.description)) : null,
 			_misskey_summary: profile.description,
 			_misskey_followedMessage: profile.followedMessage,
+			_misskey_requireSigninToViewContents: user.requireSigninToViewContents,
+			_misskey_makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore,
+			_misskey_makeNotesHiddenBefore: user.makeNotesHiddenBefore,
 			icon: avatar ? this.renderImage(avatar) : null,
 			image: banner ? this.renderImage(banner) : null,
 			backgroundUrl: background ? this.renderImage(background) : null,
@@ -525,8 +531,10 @@ export class ApRendererService {
 			discoverable: user.isExplorable,
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
+			hideOnlineStatus: user.hideOnlineStatus,
 			noindex: user.noindex,
 			indexable: !user.noindex,
+			enableRss: user.enableRss,
 			speakAsCat: user.speakAsCat,
 			attachment: attachment.length ? attachment : undefined,
 		};

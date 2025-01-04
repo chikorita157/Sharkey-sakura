@@ -99,6 +99,15 @@ export const FILE_EXT_TRACKER_MODULES = [
 	'mmcmp',
 ];
 
+export const FILE_TYPE_FLASH_CONTENT = [
+	'application/x-shockwave-flash',
+	'application/vnd.adobe.flash.movie',
+];
+
+export const FILE_EXT_FLASH_CONTENT = [
+	'swf',
+];
+
 /*
 https://github.com/sindresorhus/file-type/blob/main/supported.js
 https://github.com/sindresorhus/file-type/blob/main/core.js
@@ -119,9 +128,12 @@ export const notificationTypes = [
 	'roleAssigned',
 	'achievementEarned',
 	'exportCompleted',
+	'login',
 	'test',
 	'app',
 	'edited',
+	'scheduledNoteFailed',
+	'scheduledNotePosted',
 ] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
@@ -131,6 +143,7 @@ export const ROLE_POLICIES = [
 	'btlAvailable',
 	'canPublicNote',
 	'canImportNotes',
+	'scheduleNoteMax',
 	'mentionLimit',
 	'canInvite',
 	'inviteLimit',

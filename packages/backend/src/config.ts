@@ -74,6 +74,8 @@ type Source = {
 		index: string;
 	};
 
+	setupPassword?: string;
+
 	proxy?: string;
 	proxySmtp?: string;
 	proxyBypassHosts?: string[];
@@ -124,6 +126,7 @@ type Source = {
 	};
 
 	pidFile: string;
+	filePermissionBits?: string;
 };
 
 export type Config = {
@@ -197,6 +200,7 @@ export type Config = {
 
 	version: string;
 	publishTarballInsteadOfProvideRepositoryUrl: boolean;
+	setupPassword: string | undefined;
 	host: string;
 	hostname: string;
 	scheme: string;
@@ -230,6 +234,7 @@ export type Config = {
 	} | undefined;
 
 	pidFile: string;
+	filePermissionBits?: string;
 };
 
 const _filename = fileURLToPath(import.meta.url);
@@ -298,6 +303,7 @@ export function loadConfig(): Config {
 	return {
 		version,
 		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
+		setupPassword: config.setupPassword,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '3000', 10),
 		socket: config.socket,
@@ -366,6 +372,7 @@ export function loadConfig(): Config {
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		import: config.import,
 		pidFile: config.pidFile,
+		filePermissionBits: config.filePermissionBits,
 	};
 }
 
@@ -471,7 +478,10 @@ function applyEnvOverrides(config: Source) {
 		}
 	}
 
-	const alwaysStrings = { 'chmodSocket': true } as { [key: string]: boolean };
+	const alwaysStrings: { [key in string]?: boolean } = {
+		'chmodSocket': true,
+		'filePermissionBits': true,
+	};
 
 	function _assign(path: (string | number)[], lastStep: string | number, value: string) {
 		let thisConfig = config as any;
@@ -509,7 +519,7 @@ function applyEnvOverrides(config: Source) {
 	_apply_top(['sentryForBackend', 'enableNodeProfiling']);
 	_apply_top([['clusterLimit', 'deliverJobConcurrency', 'inboxJobConcurrency', 'relashionshipJobConcurrency', 'deliverJobPerSec', 'inboxJobPerSec', 'relashionshipJobPerSec', 'deliverJobMaxAttempts', 'inboxJobMaxAttempts']]);
 	_apply_top([['outgoingAddress', 'outgoingAddressFamily', 'proxy', 'proxySmtp', 'mediaProxy', 'proxyRemoteFiles', 'videoThumbnailGenerator']]);
-	_apply_top([['maxFileSize', 'maxNoteLength', 'maxRemoteNoteLength', 'maxAltTextLength', 'maxRemoteAltTextLength', 'pidFile']]);
+	_apply_top([['maxFileSize', 'maxNoteLength', 'maxRemoteNoteLength', 'maxAltTextLength', 'maxRemoteAltTextLength', 'pidFile', 'filePermissionBits']]);
 	_apply_top(['import', ['downloadTimeout', 'maxFileSize']]);
-	_apply_top([['signToActivityPubGet', 'checkActivityPubGetSignature']]);
+	_apply_top([['signToActivityPubGet', 'checkActivityPubGetSignature', 'setupPassword']]);
 }

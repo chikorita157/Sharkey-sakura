@@ -94,14 +94,14 @@ onMounted(async () => {
 <style lang="scss" module>
 
 .panel {
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 }
 
 .userInfo {
 	margin-bottom: 12px;
 }
 
-@container (min-width: 451px) {
+@container (min-width: 750px) {
 	.userInfo {
 		margin-bottom: 24px;
 	}

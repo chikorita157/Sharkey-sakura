@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <a :href="href" target="_blank" :class="$style.root">
 	<div :class="$style.label">
 		<template v-if="media.type.startsWith('audio')"><i class="ti ti-music"></i> {{ i18n.ts.audio }}</template>
+		<template v-else-if="media.type.startsWith('application') && media.type.includes('flash')"><i class="ti ti-bolt"></i> {{ i18n.ts.flash }}</template>
 		<template v-else><i class="ti ti-file"></i> {{ i18n.ts.file }}</template>
 	</div>
 	<div :class="$style.go">
@@ -31,17 +32,17 @@ defineProps<{
 	display: flex;
 	align-items: center;
 	width: 100%;
-	padding: var(--margin);
+	padding: var(--MI-margin);
 	margin-top: 4px;
-	border: 1px solid var(--inputBorder);
-	border-radius: var(--radius);
-	background-color: var(--panel);
+	border: 1px solid var(--MI_THEME-inputBorder);
+	border-radius: var(--MI-radius);
+	background-color: var(--MI_THEME-panel);
 	transition: background-color .1s, border-color .1s;
 
 	&:hover {
 		text-decoration: none;
-		border-color: var(--inputBorderHover);
-		background-color: var(--buttonHoverBg);
+		border-color: var(--MI_THEME-inputBorderHover);
+		background-color: var(--MI_THEME-buttonHoverBg);
 	}
 }
 
